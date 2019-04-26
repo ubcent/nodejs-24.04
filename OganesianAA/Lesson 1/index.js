@@ -3,8 +3,9 @@ const cursor = ansi(process.stdout);
 
 cursor
     .grey()
-    .bg.white()
-    .write('Lets use axios a little bit.')
+    .bg.green()
+    .write('Let\'s use axios a little bit. ')
+    .write('We got here some data(json honestly) from jsonplaceholder.typicode.com.')
     .bg.reset()
     .reset()
     .write('\n');
@@ -21,7 +22,7 @@ axios.get('https://jsonplaceholder.typicode.com/users')
     .then(()=>{
         cursor
             .grey()
-            .bg.white()
+            .bg.green()
             .write('Finita!')
             .bg.reset()
             .reset()

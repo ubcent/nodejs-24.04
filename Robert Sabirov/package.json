@@ -1,0 +1,15 @@
+{
+  "name": "robert-sabirov",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robert Sabirov a.k.a. Hydra13",
+  "license": "ISC",
+  "dependencies": {
+    "ansi": "^0.3.1",
+    "cheerio": "^1.0.0-rc.3"
+  }
+}

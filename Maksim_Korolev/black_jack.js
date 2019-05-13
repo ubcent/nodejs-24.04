@@ -7,12 +7,19 @@ function getRandomInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function isBlackJack(cards) {
-    return cards.every((item) => item === 'A');
-}
-
 function isVin(user) {
-    if (user.getResult() === 21) return true;
+    if (user.getResult() === 21) {
+        readWrite.write(`Сongratulations ${user.name} you have Black Jack!!!`);
+        return true;
+    }
+    if (user.getResult() > 21) {
+        readWrite.write(`${player.name} you lost, your score: ${user.getResult()}`);
+        return false
+    }
+    if (user.cards.every((item) => item === 'A')) {
+        readWrite.write(`Сongratulations ${user.name} you have Black Jack!!!`);
+        return true;
+    }
 }
 
 const player = {
@@ -71,27 +78,27 @@ const npc = {
 };
 
 async function play() {
+    let exit = false;
     while (!exit) {
         readWrite.write(`${player.name} your cards: ${player.cards[0]}, ${player.cards[1]}\n`);
-        if(isBlackJack(player.cards)) {
-            readWrite.write(`Сongratulations ${player.name} you have Black Jack!!!`);
+        if(isVin(player)) {
+            readWrite.write(`If you want play again input "yes" or input "no" to exit\n`);
             if (await readWrite.read().toLowerCase() === 'no') return;
             if (await readWrite.read().toLowerCase() ==='yes') return play();
-            readWrite.write(`Undefined command! Game over :(`);
+            readWrite.write(`Undefined command! Game over :(\n`);
             return;
         }
+        let answer = '';
+        readWrite.write(`If you want get card input "more" or input "no" to opponent turn\n`);
+        while (answer !== 'no') {
 
+        }
     }
 }
 
-async function playAgain() {
-
-}
 
 async function init() {
-    readWrite.write('Welcome to BlackJack \n');
-    let exit = false;
-
+    readWrite.write('Welcome to Black Jack \n');
     readWrite.write('Enter your name: ');
     player.name = await readWrite.read();
     if (player.name === '') player.name = 'User';

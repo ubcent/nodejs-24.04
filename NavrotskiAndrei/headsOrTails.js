@@ -2,9 +2,10 @@ const readline = require('readline');
 const fs = require('fs');
 const write = fs.writeFile;
 
+
 class Game {
-	constructor(fileLog){
-		this.fileLog = fileLog;
+	constructor(filePath){
+		this.filePath= filePath;
 		this.counter = 0;
 		this.correctAnswer = 0;
 		this.incorrectAnswer = 0;
@@ -24,16 +25,14 @@ class Game {
 		}
 	};
 	gameOver(){
-		let results = `Игра окончена. Всего сыграно - ${this.counter}, Угадано - ${this.correctAnswer}, Не угадаго - ${this.incorrectAnswer}`;
-		console.log(results);
-		write(this.fileLog, results, err => {
+		console.log(`ИГРА ОКОНЧЕНА.\nВсего сыграно - ${this.counter}, Угадано - ${this.correctAnswer}, Не угадано - ${this.incorrectAnswer}`);
+		let results = `Cыграно-${this.counter}, Угадано-${this.correctAnswer}, Не угадано-${this.incorrectAnswer}`;
+		write(this.filePath, results, err => {
 			if(err){
 				console.log(err);
 			}
 		})
 	};
-
-
 }
 
 const rl = readline.createInterface({

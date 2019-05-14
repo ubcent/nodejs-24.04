@@ -1,5 +1,5 @@
 ////////////////////////////////////////////
-// `game.jf -f [fileName]` for use logger //
+// `game.js -f [fileName]` for use logger //
 ////////////////////////////////////////////
 
 const argv = require('minimist')(process.argv.slice(2));
@@ -14,7 +14,7 @@ if (argv.f != null ) {
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-  });
+});
 
 let coin = coinToss();
 
@@ -27,7 +27,7 @@ rl.on('line', (cmd) => {
     else {
         if (cmd == coin) {
             console.log('Вы угадали');
-            fs.appendFile(fileName, 'Угадали, выпало - ' + coin + "\n", (err) => 
+            fs.appendFile(fileName, ' Выигрыш - выпало ' + coin + "\n", (err) => 
                 {
                     if (err) throw err;    
             }); 
@@ -37,7 +37,7 @@ rl.on('line', (cmd) => {
         else {
             console.log('Вы НЕ угадали');
             console.log("Правильный ответ - " + coin);
-            fs.appendFile(fileName, 'Не Угадали, выпало - ' + coin + "\n", (err) => 
+            fs.appendFile(fileName, ' Проигрыш - выпало ' + coin + "\n", (err) => 
                 {
                     if (err) throw err;    
             }); 

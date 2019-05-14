@@ -1,5 +1,5 @@
 const ansi = require('ansi');
-
+const text = require('ansi-colors');
 const cursor = ansi(process.stdout);
 
 cursor
@@ -14,7 +14,7 @@ cursor.beep();
 
 console.log('Hello World!!!');
 
-const text = require('ansi-colors');
+
 console.log(text.bold.red('this is a bold red message'));
 console.log(text.bold.yellow.italic('this is a bold yellow italicized message'));
 console.log(text.green.bold.underline('this is a bold green underlined message'));

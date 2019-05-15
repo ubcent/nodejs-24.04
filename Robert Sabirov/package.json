@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "game": "node ./src/game.js ./logs/game.log",
+    "game-no-log": "node ./src/game.js",
+    "analyze": "node ./src/analyze.js ./logs/game.log",
+    "lesson1": "node ./src/lesson1.js"
   },
   "author": "Robert Sabirov a.k.a. Hydra13",
   "license": "ISC",
   "dependencies": {
     "ansi": "^0.3.1",
-    "cheerio": "^1.0.0-rc.3"
+    "cheerio": "^1.0.0-rc.3",
+    "minimist": "^1.2.0"
   }
 }

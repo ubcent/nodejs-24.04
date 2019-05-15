@@ -1,6 +1,5 @@
+// Using CursorAnsi
 const cursor = require('./cursorAnsi');
-const https = require('https');
-const cheerio = require('cheerio');
 
 cursor.writeGreen('testing ');
 cursor.writeGreenLn('string1');
@@ -17,6 +16,10 @@ cursor.writeBlueLn('testing string2');
 ////////////////////////////////////////////////////////
 console.log('\n\n\n');
 ////////////////////////////////////////////////////////
+
+// Using other modules
+const https = require('https');
+const cheerio = require('cheerio');
 
 const urlString = 'https://geekbrains.ru/events';
 let countDataSize = 0;

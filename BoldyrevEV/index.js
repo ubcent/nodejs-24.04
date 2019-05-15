@@ -1,29 +1,29 @@
-var ansi = require('ansi');
-var axios = require('axios');
+var readline = require('readline');
+var fs = require('fs');
 
-var cursor = ansi(process.stdout);
-var couter = 2;
-
-
-/**
- * Выводит необходиму информацию из запроса.
- * @param {string} url - строка адреса запроса.
- * @param {number} couter - счетчик для массива данных.
- */
-function get (url, couter) {
-    axios.get (url)
-        .then ((response) => {
-            for (var i = 0; i < couter; i++) {
-                var usersData = response.data[i];
-
-                cursor
-                    .bg.green()
-                    .hex('#6bea28').bold().underline()
-
-                console.log(usersData);
-                cursor.reset();
-            }
+let rl = readline.createInterface({
+            input: process.stdin, // ввод из стандартного потока
+            output: process.stdout // вывод в стандартный поток
         });
+
+function game (fileName) {
+    rl.question('Отгодай число: 1 или 2!', function(answer) {
+        let count = Math.round(Math.random()+1);
+
+        if (+answer === count){
+            console.log('Угадал!');
+
+            fs.appendFile(`${fileName}`, '\n Правильный ответ: ' + answer , 'utf8', (err, data) => {
+                if (err) throw err;
+            });
+        } else {
+            console.log('Повезет в следующий раз! Правильный ответ - ' + count);
+
+            fs.appendFile(`${fileName}`, '\n Неправильный ответ: ' + answer, 'utf8', (err, data) => {
+                if (err) throw err;
+            });
+        }
+    });
 }
 
-get (`https://jsonplaceholder.typicode.com/users`, couter);
+game("text.txt");

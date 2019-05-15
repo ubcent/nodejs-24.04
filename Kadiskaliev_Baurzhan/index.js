@@ -14,6 +14,7 @@ const arrGame = ['орел', 'решка'];
 console.log('Игра ОРЕЛ или РЕШКА. Ответ должен быть "орел" или "решка"');
 console.log('Играем????');
 
+
 rl.on('line', (input) => {
   if( input === 'exit' || input === 'e' || input === 'выход' || input === 'нет' || input === 'no' || input === 'n') {
     console.log('Скучно будет - приходи))))))');

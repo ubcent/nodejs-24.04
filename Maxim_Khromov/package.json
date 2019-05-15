@@ -1,26 +1,18 @@
 {
-  "name": "nodejs-24.04",
+  "name": "Maxim_Khromov",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "ansi": "^0.3.1",
-    "one-liner-joke": "^1.2.0",
-    "readline": "^1.3.0"
-  },
-  "devDependencies": {},
+  "main": "blackjack.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MaxKhromov/nodejs-24.04.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MaxKhromov/nodejs-24.04/issues"
-  },
-  "homepage": "https://github.com/MaxKhromov/nodejs-24.04#readme"
+  "dependencies": {
+    "ansi": "^0.3.1",
+    "minimist": "^1.2.0",
+    "random": "^2.1.1",
+    "readline-sync": "^1.4.9"
+  }
 }

@@ -34,9 +34,10 @@ const colors = require('colors');
 const readWrite = require('console-read-write');
  
 async function main() {
-	readWrite.write('Type the name of the color you want to see the text or type \"beep\" to play a beep. \n')
-	readWrite.write('Supported colors: \x1b[47;30mblack\x1b[0m, \x1b[31mred\x1b[0m, \x1b[32mgreen\x1b[0m, \x1b[33myellow\x1b[0m, \x1b[34mblue\x1b[0m, \x1b[35mmagenta\x1b[0m, \x1b[36mcyan\x1b[0m, \x1b[37mwhite\x1b[0m, \x1b[90mgrey\x1b[0m. \n')
-	readWrite.write('To exit enter \"end\".')
+	readWrite.write('Type the name of the color you want to see the text or type \"beep\" to play a beep. \n');
+	readWrite.write('Supported colors: \x1b[47;30mblack\x1b[0m, \x1b[31mred\x1b[0m, \x1b[32mgreen\x1b[0m,' +
+		' \x1b[33myellow\x1b[0m, \x1b[34mblue\x1b[0m, \x1b[35mmagenta\x1b[0m, \x1b[36mcyan\x1b[0m, \x1b[37mwhite\x1b[0m, \x1b[90mgrey\x1b[0m. \n');
+	readWrite.write('To exit enter \"end\".');
 	let exit = false;
 	let text;
 	while(!exit) {

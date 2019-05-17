@@ -17,7 +17,6 @@ rl.question('Введите текст на английском для пере
             method: 'POST',
             json: true,
         },
-
         (err, res, data) => {
         if (!err && res.statusCode === 200) {
             console.log(`Перевод текста "${answer}": ${data.text[0]}`);

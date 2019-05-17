@@ -2,6 +2,7 @@
 
 const request = require('request');
 const readline = require('readline');
+const colors = require('colors');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -19,7 +20,7 @@ rl.question('Введите текст на английском для пере
         },
         (err, res, data) => {
         if (!err && res.statusCode === 200) {
-            console.log(`Перевод текста "${answer}": ${data.text[0]}`);
+            console.log(`Перевод текста "${answer.cyan}": ${data.text[0].green}`);
         } else {
             console.log('Error: ' + err);
         }

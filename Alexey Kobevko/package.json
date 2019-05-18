@@ -11,9 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "ansi": "^0.3.1",
-    "figlet": "^1.2.1"
+    "cheerio": "^1.0.0-rc.3",
+    "figlet": "^1.2.1",
+    "minimist": "^1.2.0",
+    "nodemailer": "^6.1.1",
+    "request": "^2.88.0"
   },
   "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
     "pm2": "^3.5.0",
     "webpack": "^4.30.0"
   }

@@ -1,0 +1,22 @@
+{
+  "name": "Kadiskaliev_Baurzhan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lessonOne": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Kadiskaliev_Baurzhan",
+  "license": "ISC",
+  "dependencies": {
+    "ansi": "^0.3.1",
+    "ansi-colors": "^3.2.4"
+  },
+  "devDependencies": {
+    "webpack": "^4.30.0"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {}
+}

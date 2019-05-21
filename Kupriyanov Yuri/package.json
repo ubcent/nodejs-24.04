@@ -12,6 +12,8 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "chalk": "^2.4.2",
-    "minimist": "^1.2.0"
+    "cheerio": "^1.0.0-rc.3",
+    "minimist": "^1.2.0",
+    "request": "^2.88.0"
   }
 }

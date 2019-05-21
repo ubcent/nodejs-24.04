@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "grabbing": "node ./lesson3/grabbing.js",
-    "translate": "node ./lesson3/translate.js",
+    "grabbing": "node ./src/lesson3/grabbing.js",
+    "translate": "node ./src/lesson3/translate.js",
     "game": "node ./src/lesson2/game.js ./logs/game.log",
     "game-no-log": "node ./src/lesson2/game.js",
     "analyze": "node ./src/lesson2/analyze.js ./logs/game.log",

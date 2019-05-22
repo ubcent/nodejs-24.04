@@ -12,8 +12,8 @@ const argv = minimist(process.argv.slice(2), {
 
 let sourceWord = 'Translate please';
 
-if( argv['word'] ) {
-    sourceWord = argv['word'];
+if( argv.word ) {
+    sourceWord = argv.word;
 }
 
 console.log('Слово для перевода:', sourceWord);
@@ -53,8 +53,8 @@ function YandexTranslate(someText) {
                   ]
           }
         */
-        res = JSON.parse(body);
-        console.log('Перевод: ', res['text']);
+        result = JSON.parse(body);
+        console.log('Перевод: ', result.text);
       } else {
         throw Error; 
       }

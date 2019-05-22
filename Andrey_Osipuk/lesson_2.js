@@ -104,3 +104,84 @@ function coin() {
         }
     });
 }
+//blackJack
+/*
+function getRandomInt(min, max) {
+    return Math.floor(Math.random()*(max - min + 1)) + min;
+}
+
+function getCard() {
+    var cards = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    return cards[getRandomInt(0, cards.length - 1)];
+}
+
+function getSum(arr) {
+    var sum = 0;
+
+    for (var i=0; i<arr.length; i++) {
+
+        if (arr[i] != 'A') {
+            if (arr[i] == 'J' || arr[i] == 'Q' || arr[i] == 'K') {
+                    sum = sum + 10;
+            } else {
+                    sum = sum + parseInt(arr[i]);
+                }
+        } else {
+            if (sum>10) {
+                sum = sum + 1;
+            } else {
+                sum = sum + 11;
+            }
+        }
+    }
+    return sum;
+}
+
+function getStatus() {
+    return 'Дилер: ' + dealer.join(' ') + '; Игрок: ' + player.join(', ') +   '\nТекущая сумма карт у игрока: ' + getSum(player) + '; у дилера: ' + getSum(dealer);
+}
+
+var dealer = [getCard()];
+var player = [getCard(), getCard()];
+var answer = '';
+
+if (getSum(player) == 21) {
+        alert(getStatus() + '\nBlack Jack!');
+    }  
+    else {
+        do {
+            answer = prompt(getStatus() + '\nЕще карту? ok-да, иначе-нет.');
+
+            if (answer == '') {
+                player.push(getCard());
+            }
+        } while(answer == '' && getSum(player) < 21);
+
+        if (getSum(player) == 21) {
+                alert(getStatus() + '\nBlack Jack!');
+            } 
+            else if (getSum(player) > 21) {
+                alert(getStatus() + '\nПеребор');
+            } 
+            else {
+                while (getSum(dealer) < 17) {
+                    dealer.push(getCard());
+                }
+                var sumD = getSum(dealer);
+                var sumP = getSum(player);
+
+                if (sumD == 21) {
+                    alert(getStatus() + '\nПродул =( у дилера Black Jack');
+                } else if (sumD > 21) {
+                    alert(getStatus() + '\nПобеда! у дилера перебор');
+                } else if (sumP == sumD) {
+                    alert(getStatus() + '\nНичья -_-');
+                } else if (sumP > sumD) {
+                    alert(getStatus() + '\nПобеда! У тебя больше =)');
+                } else {
+                    alert(getStatus() + '\nПродул =( у дилера больше');
+                }
+            }
+    }   
+
+*/

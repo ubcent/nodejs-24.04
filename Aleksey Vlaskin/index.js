@@ -1,112 +1,60 @@
-const readline = require('readline');
+const readline  = require('readline');
+const request   = require('request');
+const cheerio   = require('cheerio');
 
-const fs = require('fs');
-
-const argv = require('minimist')(process.argv.slice(2));
-
-if (argv.a) {
-    try {
-        fs.readFile(argv._[0], 'utf-8', (err, data) => {
-            if (err) throw err;
-                        
-            let arrData = data.split(',').filter(elem => {return elem!=='';}); //уберём пустой элемент после окончания игры, если он есть
-            const total = arrData.length;
-            console.log('games:', total);
-             
-            if (total ===0) {return};
-            
-            let arrWin = arrData.filter(elem => {return elem === '1'});
-            let arrDef = arrData.filter(elem => {return elem === '0'});
-            
-            const wins = arrWin.length;
-            const defs = arrDef.length;
-                    
-            const persWins = Math.round(parseFloat(wins/total*100) * 100) / 100;
-            
-            console.log('wins:', wins + ',', Math.round(parseFloat(wins/total*100) * 100) / 100 + '\%');
-            console.log('defs:', defs + ',', 100-persWins + '\%');
-            
-            let maxWinsRow = 0;
-            let maxDefsRow = 0;
-            let nowWin = 0;
-            let nowDef = 0;
-            
-            for (i=0; i<total; i++){
-                if (arrData[i]==='1'){
-                    if (nowDef>0){ //Первая победа в серии, обработаем серию поражений
-                        if(nowDef>maxDefsRow) {
-                            maxDefsRow = nowDef;
-                            nowDef = 0;
-                        }
-                    }
-                    nowWin++;
-                }else if (arrData[i]==='0'){
-                    if (nowWin>0){ //Первое поражение в серии, обработаем серию побед
-                        if(nowWin>maxWinsRow) {
-                            maxWinsRow = nowWin;
-                            nowWin = 0;
-                        }
-                    }
-                    nowDef++;
-                };
-                
-                if (i===total-1){
-                    if(nowWin>maxWinsRow) {maxWinsRow = nowWin;}    
-                    if(nowDef>maxDefsRow) {maxDefsRow = nowDef;}
-                };
-            };
-            
-            console.log('max wins:', maxWinsRow, 'max defs:', maxDefsRow)
-            
+request('http://1c.ru', (err, req, html) => {
+    if (!err && req.statusCode === 200){
+        const $ = cheerio.load(html.toString());
+        const $news = $('.span6').eq(0).children('dl').children();
+        
+        const $datesArray = $news.filter((index, elem) => {
+            return elem.tagName === 'dt';
         });
-    } catch (err) {
-        console.error(err);
-    }
-} else {
+        
+        const datesArray = $datesArray.map((index, elem) => {
+            return elem.children[0].children[0].data;
+        }).get();        
+                
+        const $newsArray = $news.filter((index, elem) => {
+            return elem.tagName === 'dd';
+        });        
+          
+        console.log('Новости фирмы 1С\n');
+        $newsArray.each((index, elem) => {
+            console.log(datesArray[index]);
+            let strnews = ($(elem).text().replace(/(\s{22,})+/g, ''));              
+            strnews = strnews.replace(/(\s{21,})+/g, '\n');              
+            console.log(strnews.replace(/(курсы:)+/g,'курсы:\n'), '\n'); //Курсы всегда оглашаются списками, оформим
+        });
+    };
+    translate();
+});
+
+function translate() {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
     });
 
-    console.log('The game is started. Try to guess the number! (1/2)');
+    console.log('Введите текст для перевода на русский язык (exit - выход)');
 
-    let firstGame = true;
-    let systemQuestion = false;
-
-    let test = Math.floor(Math.random() * (2)) + 1; //Math.floor(Math.random() * (max - min + 1)) + min;
-
-    rl.on('line', (cmd) => {
-        if (cmd === 'exit') {
-            rl.close();
-            if (systemQuestion === false) { //Выход во время игры, запишем поражение
-                fs.appendFile(argv._[0], '0,', (err, data) => {
-                    if (err) throw err;
-                });
-            }
-        } else if ((cmd === 'y') && (systemQuestion === true)) {
-            systemQuestion = false;
-            console.log('The game is started. Try to guess the number! (1/2)');
-            test = Math.floor(Math.random() * (2)) + 1;
-        } else if ((cmd === 'n') && (systemQuestion === true)) {
-            systemQuestion = false;
-            console.log('bye!');
-            rl.close();
-        } else if ((Number(cmd) === test) && (systemQuestion === false)) {
-            console.log('You win! New game?(y/n)');
-            systemQuestion = true;
-            fs.appendFile(argv._[0], '1,', (err, data) => {
-                if (err) throw err;
-            });
+    rl.on('line', (userText) => {
+        if (userText === 'exit') {
+            rl.close();            
         } else {
-            if (systemQuestion === false) {
-                console.log('Wrong :(. New game?(y/n)');
-                fs.appendFile(argv._[0], '0,', (err, data) => {
-                    if (err) throw err;
-                    systemQuestion = true;
-                });
-            } else {
-                console.log('New game?(y/n)');
-            }
+            request({
+                method: 'POST',
+                uri: `https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20190522T091046Z.916ae34ccf457875.bfcc3d1ad8074e27a7cb5e6e4138ee32627c0cd2&text=${userText}}&lang=ru`,}, function (error, response, body) {
+                    if (error) {
+                        console.error(error);
+                    } else {
+                        const answ = JSON.parse(body).text;
+                        if (answ.length > 0) {
+                            console.log(answ[0].replace(/[{}]+/g, ''), '\n\nВведите текст для перевода на русский язык (exit - выход)');    
+                        };            
+                        //console.log(response.statusCode);           
+                    };
+            });
         };
     });
 }

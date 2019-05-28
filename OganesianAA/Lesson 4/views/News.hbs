@@ -1,0 +1,15 @@
+<div class="body">
+    <h3>
+        {{#if error}}
+            <h2>Error! </h2>
+        {{/if}}
+        <div class="newsblock">
+            <ul class="people_list">
+                {{#each people}}
+                    <li><a href="people/{{name}}">{{name}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
+    </h3>
+
+</div>

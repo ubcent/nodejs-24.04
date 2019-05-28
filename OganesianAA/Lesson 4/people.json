@@ -1,0 +1,17 @@
+{
+  "title": "JSON file imitations",
+  "people": {
+    "1": {
+      "name": "Hugo"
+    },
+    "2": {
+      "name": "Jose"
+    },
+    "3": {
+      "name": "Henry"
+    },
+    "4": {
+      "name": "Miguel"
+    }
+  }
+}

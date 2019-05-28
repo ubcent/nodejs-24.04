@@ -1,0 +1,26 @@
+<div class="entry">
+    {{#if error}}
+        <h2>Error! </h2>
+    {{/if}}
+    <div class="body">
+        <h2>
+        <form action="/" method="POST" name="news">
+            <label for="1">Sourse
+                <input list="my-list" name="news[source]">
+            </label>
+            <datalist id="my-list">
+                <option label="First" value="First" ></option>
+                <option label="Second" value="Second" ></option>
+            </datalist>
+            <br>
+            <br>
+            <label for="2">
+                Quantity (between 1 and 10):
+                <input type="number" min="1" max="10" name="news[quantity]">
+            </label>
+
+            <button>OK</button>
+        </form>
+        </h2>
+    </div>
+</div>

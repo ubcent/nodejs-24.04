@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "server": "node ./src/lesson4/server.js",
     "grabbing": "node ./src/lesson3/grabbing.js",
     "translate": "node ./src/lesson3/translate.js",
     "game": "node ./src/lesson2/game.js ./logs/game.log",
@@ -16,7 +17,11 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "cheerio": "^1.0.0-rc.3",
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.1.2",
     "minimist": "^1.2.0",
     "request": "^2.88.0"
-  }
+  },
+  "devDependencies": {}
 }

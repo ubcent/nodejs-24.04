@@ -12,7 +12,13 @@
   "dependencies": {
     "ansi": "^0.3.1",
     "cheerio": "^1.0.0-rc.3",
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.1.2",
+    "iconv": "^2.3.4",
+    "iconv-lite": "^0.4.24",
     "minimist": "^1.2.0",
+    "node-autodetect-utf8-cp1251-cp866": "^0.1.0",
     "request": "^2.88.0",
     "url": "^0.11.0"
   },

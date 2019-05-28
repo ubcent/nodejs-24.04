@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lesson 4</title>
+</head>
+
+<body>
+    <input class="checked" type="radio" name="change" value="bash" id="check1" checked>
+    <label for="check1">Bash.im</label>
+    <input class="checked" type="radio" name="change" value="pikabu" id="check2">
+    <label for="check2">pikabu.ru</label>
+    <input class="checked" type="radio" name="change" value="reddit" id="check3">
+    <label for="check3">reddit</label>
+    <button id="news">Вывести новости</button>
+    <div class="main"></div>
+    <script>
+        'use strick';
+        const news = document.getElementById('news');
+        news.addEventListener('click', () => {
+            const $checked = document.getElementsByClassName('checked');
+            let check;
+            for (let i = 0; i < $checked.length; i++) {
+                if ($checked[i].checked) check = $checked[i].value
+            }
+            // fetch('http://127.0.0.1:8888', {
+            //     method: 'POST',
+            //     body: check,
+            // })
+        })
+    </script>
+</body>
+
+</html>

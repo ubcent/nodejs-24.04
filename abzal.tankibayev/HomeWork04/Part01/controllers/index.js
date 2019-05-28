@@ -1,3 +1,5 @@
+"use strict";
+
 const path = require('path');
 const express = require('express');
 const consolidate = require('consolidate');
@@ -6,30 +8,36 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 const app = express();
-
+const PORT = 8888;
+const HOST = `http://localhost`;
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, '../Views'));
 
+app.set('css', express.static(__dirname + '../css'));
+
 app.get('/', (req, res) => {
     res.render('main.hbs');
 });
-
-app.get('/lenta', (req, res) => {
-    requestNews(res, 'https://lenta.ru/', '.js-top-seven .item a');
+app.get('/css', (req, res) => {
+    res.render('styles.css');
 });
 
-app.get('/ria', (req, res) => {
-    requestNews(res, 'https://ria.ru/', '.cell-list__item .cell-list__item-title');
+app.get('/tengrinews', (req, res) => {
+    requestNews(res, 'https://tengrinews.kz/', '#lenta_block .item');
+});
+
+app.get('/bnews', (req, res) => {
+    requestNews(res, 'https://bnews.kz/', 'ul.list span.text.blck');
 });
 
 
-app.get('/aif', (req, res) => {
-    requestNews(res, 'https://aif.ru/', '.news_list li a');
+app.get('/today', (req, res) => {
+    requestNews(res, 'http://today.kz/', '.feed__list .feed__item.-icon .feed__content');
 });
 
-app.listen(8888, ()=>{
-    console.log('Server started');
+app.listen(PORT, ()=>{
+    console.log(`Server started on ${HOST}:${PORT}`);
 });
 
 function requestNews (res, url, selector) {

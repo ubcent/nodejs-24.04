@@ -1,0 +1,35 @@
+<h2>Какие новости желаете посмотреть</h2>
+<div>
+    <label><input type='radio' name='source' id='source-1' value='1' required {{#if source1}} checked {{/if}}>https://lenta.ru/parts/news </label><br>
+    <label><input type='radio' name='source' id='source-2' value='2' required {{#if source2}} checked {{/if}}>https://www.newsru.com/allnews/ </label><br>
+    <label>Сколько новостей хотите получить?  <input type='number' name='count' id='source-count' required value={{sourceCount}} ></label><br>
+    <input type='submit' value='Получить' id='btn'>
+</div>
+<div id='news-read'></div>
+<script>
+
+    const btn = document.getElementById('btn');
+    btn.addEventListener('click', () => {
+        const data = {
+            sourceCount: document.getElementById('source-count').value,
+            source: ''
+        };
+        if (document.getElementById('source-1').checked) {
+            data.source = document.getElementById('source-1').value
+        } else {
+           data.source = document.getElementById('source-2').value 
+        }
+        fetch('/news', {  
+            method: 'post',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            const div = document.getElementById('news-read');
+            div.innerHTML = data
+        })
+    })
+</script>

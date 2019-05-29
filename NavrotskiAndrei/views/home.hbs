@@ -1,5 +1,11 @@
-<div class="user">
-	<h1>{{title}}</h1>
+<div>
+	<h1>{{name}}</h1>
+
+	<ul>
+		{{#each title}}
+			<li><a href="http://localhost:8888/news/{{this}}">{{this}}</a></li>
+		{{/each}}
+	</ul>
+
 </div>
 
-<a href="http://localhost:8888/news/1">News</a>

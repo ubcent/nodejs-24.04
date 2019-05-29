@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 540px;
+    margin: 0 auto;
+}
+
+.mainText {
+    font-size: 24px;
+    color: blue;
+    margin-bottom: 20px;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+}
+
+.navigation a{
+    display: block;
+    text-decoration: none;
+    width: 100px;
+    height: 40px;
+    border: 1px #1357d3 solid;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 37px;
+    background-color: aqua;
+}
+
+.navigation a:hover{
+    background-color: rgba(0, 255, 149, 0.8);
+}
+
+.mainPage {
+    display: block;
+    text-decoration: none;
+    width: 150px;
+    height: 40px;
+    border: 1px #1357d3 solid;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 37px;
+    background-color: aqua;
+    margin: 0 auto;
+}
+
+.writers_list {
+    margin-top: 20px;
+}
+
+.writers_list li {
+    margin-bottom: 10px;
+}

@@ -4,6 +4,8 @@ const express = require('express');
 const consolidate = require('consolidate');
 const handlebars = require('handlebars');
 
+var cookieParser = require('cookie-parser');
+
 const app = express();
 
 const request = require('request');
@@ -26,6 +28,7 @@ const nav = {
     link1:'News'
 };
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.get('/', (req, res) => {
@@ -33,11 +36,20 @@ app.get('/', (req, res) => {
 });
 
 app.get('*/news', (req, res) => {
-    res.render('news', {});
+    let s1 = true;
+    let s2 = false;
+    if (req.cookies.source != '1') {
+        s2 = true;
+        s1 = false;
+    }
+    res.render('news', {sourceCount: req.cookies.sourceCount, source1: s1, source2: s2});
 });
 
 
 app.post('*/news', (req, res) => {
+
+    res.cookie('source', req.body.source);
+    res.cookie('sourceCount', req.body.sourceCount);
 
     const temp = {news: []};
   

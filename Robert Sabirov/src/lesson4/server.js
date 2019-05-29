@@ -9,6 +9,9 @@ app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/public', express.static(path.resolve(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     res.render('main', {
@@ -17,22 +20,22 @@ app.get('/', (req, res) => {
     });
 })
 
-app.get('/1', async (req, res) => {
-    const Parser = require('./grabbers/TheNextWebGrabber');
-    const parser = new Parser();
-    res.render('main', {
-        title: 'TheNextWeb',
-        topics: await parser.getTopics()
-    })
-})
+const TheNextWebGrabber = require('./grabbers/TheNextWebGrabber');
+const HabrahabrGrabber = require('./grabbers/HabrahabrGrabber');
+const parsers = {
+    'TheNextWeb': (new TheNextWebGrabber()),
+    'Habrahabr': (new HabrahabrGrabber())
+}
 
-app.get('/2', async (req, res) => {
-    const Parser = require('./grabbers/HabrahabrGrabber');
-    const parser = new Parser();
-    res.render('main', {
-        title: 'Habrahabr',
-        topics: await parser.getTopics()
-    })
+app.post('/*', async (req, res) => {
+    if (parsers.hasOwnProperty(req.body.src)) {
+        res.render('main', {
+            title: req.body.src,
+            topics: await parsers[req.body.src].getTopics()
+        });
+    } else {
+        res.status(404).json('Ошибка 404. Запрашиваемая страница не найдена');
+    }
 })
 
 app.all('*', (req, res) => {

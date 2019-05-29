@@ -6,22 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lesson4</title>
+    <link rel="stylesheet" href="/public/normalize.css">
+    <link rel="stylesheet" href="/public/style.css">
 </head>
 
 <body>
     <div class="container">
         <h1>Источник</h1>
         <h2>{{title}}</h2>
-        <a href="/1">thenextweb.com</a>
-        <a href="/2">habrahabr.ru</a>
-        {{!-- <form method="post" enctype='application/json'>
-            <label for="src">Источник </label>
-            <select id="src" name="src">
-                <option>TheNextWeb</option>
-                <option>Habrahabr</option>
+        <form method="post" action="/">
+            <label for="src">Источник:</label>
+            <select id="src" name="src" value="{{title}}">
+                <option value="TheNextWeb">TheNextWeb</option>
+                <option value="Habrahabr">Habrahabr</option>
             </select>
             <button type="submit">Выбрать</button>
-        </form> --}}
+        </form>
         <div class="list">
             <ul>
                 {{#each topics}}

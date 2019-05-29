@@ -8,8 +8,9 @@ function siteParser(URL, markerText) {
     request(URL, (err, req, html) => {
         if(!err && req.statusCode === 200) {
             const $ = cheerio.load(html);
-            for( let i = 0; i < 10; i++ )
-                console.log($(markerText).eq(i).text().trim(),'\n');
+            $(markerText).each( function() {
+                console.log($(this).text().trim());
+            });               
         }
     })
 }

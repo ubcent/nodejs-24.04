@@ -6,19 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Lesson 4</title>
+  <link rel="stylesheet" href="/public/style.css">
 </head>
 
 <body>
-  <input class="checked" type="radio" name="change" value="bash" id="check1" checked>
-  <label for="check1">Bash.im</label>
-  <input class="checked" type="radio" name="change" value="pikabu" id="check2">
-  <label for="check2">pikabu.ru</label>
-  <input class="checked" type="radio" name="change" value="reddit" id="check3">
-  <label for="check3">reddit</label>
-  <button id="news">Вывести новости</button>
+  <div class="form">
+    <input class="checked" type="radio" name="change" value="bash" id="check1" checked>
+    <label for="check1">Bash.im</label>
+    <input class="checked" type="radio" name="change" value="pikabu" id="check2">
+    <label for="check2">pikabu.ru</label>
+    <input class="checked" type="radio" name="change" value="reddit" id="check3">
+    <label for="check3">reddit</label>
+    <button id="news">Вывести новости</button>
+  </div>
   <div class="main"></div>
   <script>
-    'use strick';
+    'use strict';
     const main = document.getElementsByClassName('main')[0];
     const news = document.getElementById('news');
 
@@ -41,7 +44,7 @@
         .then((response) => response.text())
         .then((elem) => {
           main.innerHTML = elem;
-         })
+        })
     })
   </script>
 </body>

@@ -3,15 +3,36 @@
 const request = require('request');
 const cheerio = require('cheerio');
 
-request('https://120.su/', (err, req, html) => {
-    if (!err && req.statusCode === 200) {
-        const $ = cheerio.load(html);
-        for (let i = 0; i < 10; i++) {
-            console.log(`Новость: ${i + 1}\n ${$('.entry-title').eq(i).text()}\n`);
-            console.log($('.entry-content').eq(i).find('p').text() + '\n');
-        }
+export const newsData = {
+	news120: {
+		title: null,
+		content: null,
+	},
 
-    } else {
-        console.log('Error: ' + err);
-    }
-});
+	newsAnimal: {
+		title: null,
+		content: null,
+	},
+};
+
+function getParsNews(newsData) {
+	request('https://120.su/', (err, req, html) => {
+		if (!err && req.statusCode === 200) {
+			const $ = cheerio.load(html);
+			newsData.news120.title = $('.entry-title');
+			newsData.news120.content = $('.entry-content').find('p');
+		} else {
+			console.log('Error: ' + err);
+		}
+	});
+
+	request('http://goodnewsanimal.ru/', (err, req, html) => {
+		if (!err && req.statusCode === 200) {
+			const $ = cheerio.load(html);
+			newsData.newsAnimal.title = $('.newsTitle').find('a');
+			newsData.newsAnimal.content = $('.newsMessage');
+		} else {
+			console.log('Error: ' + err);
+		}
+	});
+}

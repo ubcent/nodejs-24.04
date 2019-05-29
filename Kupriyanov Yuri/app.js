@@ -7,8 +7,6 @@ const cookieParser =  require ('cookie-parser');
 const path = require('path');
 const lodash = require('lodash');
 
-path.dirname
-
 const app = express();
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
@@ -54,13 +52,11 @@ app.use(function (req, res, next) {
 
 app.get('/news', async (req, res) => {
     
-    let news = [];
-
     let listItem = lodash.filter(list, { 'name': cookie.site } ).pop();
  
     if( listItem ) {
         newsName = listItem.name;
-        news = await siteParser(listItem.URL, listItem.markerText);
+        const news = await siteParser(listItem.URL, listItem.markerText);
         res.render('news', {
             name: newsName,
             news: news,

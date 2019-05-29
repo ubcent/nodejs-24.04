@@ -4,7 +4,10 @@ const url = require('url');
 const readline = require('readline');
 const ansi = require('ansi');
 const util = require('util');
-
+const path = require('path');
+// const express = require('express');
+// const consolidate = require('consolidate');
+// const app = express();
 const cursor = ansi(process.stdout);
 
 const rl = readline.createInterface({
@@ -48,7 +51,7 @@ function task1() {
                     .write('\n')
                     .bg.reset()
                     .reset();
-                console.log($('.quote__body').eq(i + 1).text().trim());
+                // console.log($('.quote__body').eq(i + 1).text().trim());
             }
             console.log('\nВыберите задание')
         }
@@ -58,7 +61,7 @@ function task1() {
 function task2() {
 
     rl.question('Напишите фразу, которую надо перевести\n', (answer) => {
-        
+        // encodeURI()
         const API_KEY = 'trnsl.1.1.20190520T121259Z.fec495841090efdb.d801769108827913c264d021f12524d8bc6037b4';
         const API_URL = new URL(`https://translate.yandex.net/api/v1.5/tr.json/translate?lang=ru-en&key=${API_KEY}&text=${answer}`);
         

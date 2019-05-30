@@ -1,0 +1,27 @@
+{
+  "name": "modApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "modApp.js",
+  "scripts": {
+    "test": "mocha *.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ansi": "^0.3.1",
+    "chalk": "^2.4.2",
+    "cheerio": "^1.0.0-rc.3",
+    "consolidate": "^0.15.1",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.0",
+    "handlebars": "^4.1.2",
+    "minimist": "^1.2.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.1.4",
+    "supertest": "^4.0.2"
+  }
+}

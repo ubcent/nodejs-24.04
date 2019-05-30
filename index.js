@@ -1,13 +1,15 @@
-const ansi = require("ansi");
+
+const ansi = require('ansi');
+
 
 const cursor = ansi(process.stdout);
 
 cursor
   .red()
   .bg.yellow()
-  .write("Hello world")
+  .write('Hello world')
   .bg.reset()
   .reset()
-  .write("\n");
+  .write('\n');
 
 cursor.beep();

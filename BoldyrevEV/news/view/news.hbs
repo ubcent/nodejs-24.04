@@ -1,0 +1,20 @@
+<head>
+    <meta charset="utf-8">
+    <title>TEST site</title>
+
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+</head>
+<body>
+<div class="container">
+    <nav>
+        <a class="mainPage" href="/">Главная страница</a>
+    </nav>
+    <ul class="writers_list">
+        {{#each news}}
+            <li>{{this}}</li>
+        {{else}}
+            <li>Список пуст</li>
+        {{/each}}
+    </ul>
+</div>
+</body>

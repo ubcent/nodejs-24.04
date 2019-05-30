@@ -10,17 +10,15 @@ const cheerio = require('cheerio');
 const app = express();
 const PORT = 8888;
 const HOST = `http://localhost`;
+
+app.use(express.static('../part01'));
+
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
-app.set('views', path.resolve(__dirname, '../Views'));
-
-app.set('css', express.static(__dirname + '../css'));
+app.set('views', path.resolve(__dirname, '../views'));
 
 app.get('/', (req, res) => {
     res.render('main.hbs');
-});
-app.get('/css', (req, res) => {
-    res.render('styles.css');
 });
 
 app.get('/tengrinews', (req, res) => {
@@ -30,7 +28,6 @@ app.get('/tengrinews', (req, res) => {
 app.get('/bnews', (req, res) => {
     requestNews(res, 'https://bnews.kz/', 'ul.list span.text.blck');
 });
-
 
 app.get('/today', (req, res) => {
     requestNews(res, 'http://today.kz/', '.feed__list .feed__item.-icon .feed__content');
@@ -43,14 +40,18 @@ app.listen(PORT, ()=>{
 function requestNews (res, url, selector) {
     request(url, (err, req, html) => {
         if (!err && req.statusCode == 200) {
-            let $html = cheerio.load(html);
-            let news = $html(selector);
-            let arr = {};
+            const $html = cheerio.load(html);
+            const news = $html(selector);
+            const arr = {};
             arr.news = [];
 
-            for (let i = 0; i < news.length; i++) {
+            /* for (let i = 0; i < news.length; i++) {
                 arr.news.push(news.eq(i).text());
-            }
+            } */
+
+            arr.news.array.forEach(element => {
+                element.push(news.eq(i).text());
+            });
 
             res.render('news.hbs', arr);
         }

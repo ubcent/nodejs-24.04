@@ -15,12 +15,17 @@ const options = {
 request(options, (err, req, html) => {
     if(!err) {
         const $ = cheerio.load(html);
-        let table = [];
-        let curs = [];
-        table = $('table tr td.gen7');
-        for(let i = 0; i < (table.length - 5); i += 5){
+        const table = $('table tr td.gen7');
+        const curs = [];
+        //table = $('table tr td.gen7');
+        /* for(let i = 0; i < (table.length - 5); i += 5){
             curs[i] = new Rate(table.eq(i).text().trim(), table.eq(i + 1).text(),table.eq(i + 2).text());
-        }
+        } */
+
+        table.forEach((item,index)=> {
+            curs[index] = new Rate(table.eq(i).text().trim(), table.eq(i + 1).text(),table.eq(i + 2).text());
+            index+=5;
+        });
         console.table(curs);
     }
     else {console.log(err);}

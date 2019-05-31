@@ -21,7 +21,7 @@ a {
     text-decoration: none; /* Отменяем подчеркивание у ссылки */
    }
 nav {
-    text-align:right;
+    text-align:left;
     margin:auto;
 }
 /*#endregion*/

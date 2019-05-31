@@ -44,14 +44,10 @@ function requestNews (res, url, selector) {
             const news = $html(selector);
             const arr = {};
             arr.news = [];
-
-            /* for (let i = 0; i < news.length; i++) {
+            // Прошу помочь с  использованием методов map, filter
+            for (let i = 0; i < news.length; i++) {
                 arr.news.push(news.eq(i).text());
-            } */
-
-            arr.news.array.forEach(element => {
-                element.push(news.eq(i).text());
-            });
+            }
 
             res.render('news.hbs', arr);
         }

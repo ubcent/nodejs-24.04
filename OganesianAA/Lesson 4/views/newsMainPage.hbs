@@ -6,17 +6,17 @@
         <h2>
         <form action="/" method="POST" name="news">
             <label for="1">Sourse
-                <input list="my-list" name="news[source]">
+                <input list="my-list" name="news[source]" required>
             </label>
             <datalist id="my-list">
-                <option label="First" value="First" ></option>
-                <option label="Second" value="Second" ></option>
+                <option label="ria.ru" value="RiaNews" ></option>
+                <option label="rt.com" value="RT" ></option>
             </datalist>
             <br>
             <br>
             <label for="2">
                 Quantity (between 1 and 10):
-                <input type="number" min="1" max="10" name="news[quantity]">
+                <input type="number" min="1" max="10" name="news[quantity]" required>
             </label>
 
             <button>OK</button>

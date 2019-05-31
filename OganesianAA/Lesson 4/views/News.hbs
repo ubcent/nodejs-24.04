@@ -1,15 +1,24 @@
-<div class="body">
-    <h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <div class="root">
+        {{title}}
         {{#if error}}
             <h2>Error! </h2>
         {{/if}}
         <div class="newsblock">
             <ul class="people_list">
-                {{#each people}}
-                    <li><a href="people/{{name}}">{{name}}</a></li>
+                {{#each news}}
+                    <li><a href="news/{{value}}">{{value}}</a></li>
                 {{/each}}
             </ul>
         </div>
-    </h3>
 
-</div>
+    </div>
+</body>
+</html>

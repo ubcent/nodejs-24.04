@@ -4,48 +4,84 @@ const app = express(); // создаем express приложение
 const consolidate = require('consolidate'); // подключаем поддержку шаблонизаторов
 const cheerio = require('cheerio');
 const request = require('request');
-const util = require('util');
+const chromeLauncher = require('chrome-launcher');
 
 class News {
     constructor() {
-        this.body = undefined;
-        this.source = '';
-        this.arr = [];
         this.init();
         this.start();
-        this.c = {};
+        this.news = {};
     }
     init() {
         app.use(express.json());//body-parser since v4
         app.use(express.urlencoded({extended: true}));// Parse URL-encoded bodies (as sent by HTML forms)
         app.engine('hbs', consolidate.handlebars); // выбираем функцию шаблонизации для hbs
         app.set('view engine', 'hbs'); // используем .hbs шаблоны по умолчанию
-        app.set('views', path.resolve(__dirname, 'views')); //указываем директорию для загрузки шаблонов
+        app.set(path.resolve(__dirname, 'views')); //указываем директорию для загрузки шаблонов
+    }
+    middleware(){
+        app.use((req, res, next)=>{
+            if (req.body.news){
+                switch (req.body.news.source) {
+                    case 'RiaNews':
+                        this.requestNews('https://ria.ru/', '.cell-list__item','.cell-list__item-title', req.body.news.quantity);
+                        setTimeout(()=>res.redirect('/news'),2000);
+
+                        break;
+                    case 'RT':
+                        this.requestNews('https://www.rt.com/', '.main-promobox__item','.main-promobox__link',req.body.news.quantity);
+                        setTimeout(()=>res.redirect('/news'),2000);
+                        break;
+                    default:
+                        res.redirect('/main');
+                }
+            }
+            next();
+        });
+    }
+    requestNews(link, block, element, quantity){
+        request(link, (err,res)=>{
+            if(!err && res.statusCode === 200){
+                const $ = cheerio.load(res.body);
+                let data = $(block).find(element).toArray().slice(0,quantity);
+                console.log(data.length);
+                this.news.title = 'News block';
+                let p = new Promise((res, rej)=>{
+                    this.news.news = {...[...Object.entries(data).map(([key, value]) =>
+                            Object.assign({},{value:value.children[0].data})
+                        )]};
+                    res();
+                });
+                p
+                    .then(()=>{
+                        console.log('news are ready');
+                    })
+                    .catch(err=>console.log(err))
+            }
+        });
     }
     get(){
+        app.get('/main', (req,res)=>{
+            console.log('main');
+            res.render('newsMainPage',{});
+        });
+        app.get('/news', (req,res)=>{
+            console.log('news');
+            res.render('news', this.news);
+        });
         //ловим 404
         app.get('*', (req, res)=>{
-            res.send('default page 404 not found')
-        });
-        //ловим параметр из адресной строки
-        app.get('/people/:id', (req,res)=>{
-            console.log(req.params.id);
+            res.send('<h1 class="404">404 page not found</h1>');
         });
     }
     post(){
         //логируем все пост запросы
         app.post('/', (req, res)=>{
-            // console.log(req.body);
+            console.log(req.body);
             // res.send('OK');
-        });
-    }
-    middleware1(){
-        app.use((req, res, next)=>{
+            // res.end();
             if (req.body.news){
-                Object.entries(req.body.news).map(([value, key])=>{
-                    console.log(value," : ", key);
-                });
-                next();
+                // console.log(req.body.news.source);
             }
         });
     }
@@ -55,70 +91,24 @@ class News {
             console.log('server has been started');
         });
     }
-    render(view, datasource) {
-        app.get('/main', (req, res)=>{
-            res.render(view,datasource)
-        });
 
-    }
-    getNews(){
-        request('https://ria.ru/', (err,res)=>{
-            if(!err && res.statusCode === 200){
-                const $ = cheerio.load(res.body);
-                let a = $('.cell-list__item').find('.cell-list__item-title').toArray(); //.text()
-                // Object.entries(a).map(([key, value]) =>
-                //     console.log(key, ', ',value.children[0].data)
-                // );
-                let arr = [Object.entries(a).map(([key, value]) =>
-                    [value.children[0].data])]
-                ;
-                // arr.map(item => console.log(item));
-                // this.c.dataset = {...Object.entries(a).map((item) =>
-                //        item[1].children[0].data)
-                // };
-
-                // this.c.dataset = Object.assign({}, Object.entries(a).map((item) =>
-                //     item[1].children[0].data));
-                // console.log(this.c);
-                let d = Object.assign({},arr);
-                console.log(d);
-            }
+    chromeLanuncher(){
+        chromeLauncher.launch({
+            startingUrl: 'http://localhost:8890/main'
+        }).then(chrome => {
+            console.log(`Chrome debugging port running on 8890`);
         });
     }
     start(){
-        this.render('newsMainPage', {});
-        this.middleware1();
+        this.middleware();
         this.get();
         this.post();
         this.listen();
-        this.getNews();
+        // this.chromeLanuncher();
     }
 }
 
-// this.body = read('./people.json', 'utf-8')
-//     .then(
-//         data=>{
-//             // let people = JSON.parse(data);
-//             // app
-//             //     .get('/', (req, res)=>{
-//             //         res.render('people', people)
-//             //     })
-//             //     // .get('/people', (req, res)=>{
-//             //     //     res.render('people', people)
-//             //     // })
-//             //     // .get('/users', (req, res)=>{
-//             //     //     res.render('people', people)
-//             //     // })
-//             // ;
-//
-//         },
-//         err=>{
-//             console.log(err);
-//         }
-//     )
-//     .catch(err=>
-//         console.log(err)
-//     );
-
 
 const newNews = new News();
+
+// сделать автоматическое открытие окна по нужному пути

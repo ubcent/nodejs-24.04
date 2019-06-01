@@ -19,7 +19,7 @@ class News {
         app.set('view engine', 'hbs'); // используем .hbs шаблоны по умолчанию
         app.set(path.resolve(__dirname, 'views')); //указываем директорию для загрузки шаблонов
     }
-    middleware(){
+    mwRedirect(){
         app.use((req, res, next)=>{
             if (req.body.news){
                 switch (req.body.news.source) {
@@ -100,11 +100,11 @@ class News {
         });
     }
     start(){
-        this.middleware();
+        this.mwRedirect();
         this.get();
         this.post();
         this.listen();
-        // this.chromeLanuncher();
+        this.chromeLanuncher();
     }
 }
 

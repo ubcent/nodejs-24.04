@@ -19,18 +19,20 @@ class News {
         app.set('view engine', 'hbs'); // используем .hbs шаблоны по умолчанию
         app.set(path.resolve(__dirname, 'views')); //указываем директорию для загрузки шаблонов
     }
-    mwRedirect(){
+    mwRedirect(link, block, element, quantity){
         app.use((req, res, next)=>{
             if (req.body.news){
+                this.news = {};
                 switch (req.body.news.source) {
                     case 'RiaNews':
-                        this.requestNews('https://ria.ru/', '.cell-list__item','.cell-list__item-title', req.body.news.quantity);
-                        setTimeout(()=>res.redirect('/news'),2000);
-
+                        this.requestNews('https://ria.ru/', '.cell-list__item','.cell-list__item-title', req.body.news.quantity)
+                            .then(()=>res.redirect('/news'))
+                            .catch(err=>console.log(err));
                         break;
                     case 'RT':
-                        this.requestNews('https://www.rt.com/', '.main-promobox__item','.main-promobox__link',req.body.news.quantity);
-                        setTimeout(()=>res.redirect('/news'),2000);
+                        this.requestNews('https://www.rt.com/', '.main-promobox__item','.main-promobox__link',req.body.news.quantity)
+                            .then(()=>res.redirect('/news'))
+                            .catch(err=>console.log(err));
                         break;
                     default:
                         res.redirect('/main');
@@ -39,34 +41,26 @@ class News {
             next();
         });
     }
-    requestNews(link, block, element, quantity){
-        request(link, (err,res)=>{
-            if(!err && res.statusCode === 200){
-                const $ = cheerio.load(res.body);
-                let data = $(block).find(element).toArray().slice(0,quantity);
-                console.log(data.length);
-                this.news.title = 'News block';
-                let p = new Promise((res, rej)=>{
+     requestNews(link, block, element, quantity){
+        return new Promise((resolve, reject)=>{
+             request(link, (err,res)=>{
+                if(!err && res.statusCode === 200){
+                    const $ = cheerio.load(res.body);
+                    let data = $(block).find(element).toArray().slice(0,quantity);
+                    this.news.title = 'News block';
                     this.news.news = {...[...Object.entries(data).map(([key, value]) =>
                             Object.assign({},{value:value.children[0].data})
                         )]};
-                    res();
-                });
-                p
-                    .then(()=>{
-                        console.log('news are ready');
-                    })
-                    .catch(err=>console.log(err))
-            }
+                    resolve();
+                }
+            });
         });
     }
     get(){
         app.get('/main', (req,res)=>{
-            console.log('main');
             res.render('newsMainPage',{});
         });
         app.get('/news', (req,res)=>{
-            console.log('news');
             res.render('news', this.news);
         });
         //ловим 404
@@ -77,12 +71,7 @@ class News {
     post(){
         //логируем все пост запросы
         app.post('/', (req, res)=>{
-            console.log(req.body);
-            // res.send('OK');
-            // res.end();
-            if (req.body.news){
-                // console.log(req.body.news.source);
-            }
+            // console.log(req.body);
         });
     }
     listen(){
@@ -91,7 +80,6 @@ class News {
             console.log('server has been started');
         });
     }
-
     chromeLanuncher(){
         chromeLauncher.launch({
             startingUrl: 'http://localhost:8890/main'
@@ -108,7 +96,4 @@ class News {
     }
 }
 
-
 const newNews = new News();
-
-// сделать автоматическое открытие окна по нужному пути

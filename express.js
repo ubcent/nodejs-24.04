@@ -3,6 +3,11 @@ const path = require('path');
 
 const express = require('express');
 const consolidate = require('consolidate');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://192.168.99.100:32773/stream', { useNewUrlParser: true });
+
+const User = require('./models/user');
 
 const app = express();
 
@@ -39,6 +44,31 @@ app.use((req, res, next) => {
 app.all('/', (req, res, next) => {
   console.log('Common handler');
   next();
+});
+
+app.get('/users', async (req, res) => {
+  const users = await User.find();
+
+  res.send(users);
+});
+
+app.get('/users/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  res.send(user);
+});
+
+app.post('/users', async (req, res) => {
+  let user = new User(req.body);
+  user = await user.save();
+
+  res.send(user);
+});
+
+app.put('/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body);
+
+  res.send(user);
 });
 
 app.get('/', (req, res) => {

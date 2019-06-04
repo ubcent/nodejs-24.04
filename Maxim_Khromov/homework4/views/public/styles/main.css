@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(245, 245, 245);
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.filer_panel {
+    /* width: 400px; */
+}
+
+.news_titles {
+    padding: 0;
+    margin: 0;
+}
+
+.title {
+    font-family: 'Open Sans', sans-serif;
+    display: block;
+    background-color: white;
+    margin-top: 5px;
+    padding: 10px;
+    color: rgb(131, 131, 131);
+}
+
+.title:hover {
+    color: black;
+}

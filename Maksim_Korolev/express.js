@@ -25,9 +25,7 @@ app.get('/news120', async (req, res) => {
 
 app.get('/animalnews', async (req, res) => {
     const news = await getAnimalNews();
-    res.render('animalNews', {
-        news: news,
-    });
+    res.render('animalNews', {news});
 });
 
 function getNews120() {

@@ -7,6 +7,8 @@ const cookieParser =  require ('cookie-parser');
 const path = require('path');
 const lodash = require('lodash');
 
+const task = require('./models/task');
+
 const app = express();
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
@@ -28,13 +30,48 @@ const list = [
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
+
     res.render('index', {
         title: 'новости',
         list: list,
+        tasks: await task.getAll(),
     });
 });
 
-let text; // = [{site: list[0].name}];
+app.get('/add', async (req, res) => {
+    res.render('taskAdd', {
+        title: 'Добавить задачу',
+    });
+});
+
+app.post('/add', async (req, res) => {
+    const newTask = req.body;
+    const id = await task.add(newTask);
+    res.redirect(`/task/${id}`);
+});
+
+app.get('/task/:id', async (req, res) => {
+    const id = req.params.id;
+    res.render('taskview', {
+        title: `task ${id}`,
+        task: await task.getByID(id),
+    });
+});
+
+app.post('/task/:id', async (req, res) => {
+    const id = req.params.id;
+    const updateTask = req.body;
+    await task.update(id, updateTask);
+    res.redirect(`/`);
+});
+
+app.get('/remove/:id', async (req, res) => {
+    const id = req.params.id;
+    await task.remove(id);
+    res.redirect('/');
+});
+
+let text = [{site: list[0].name}];
 let cookie;
 
 app.post('/', function(req, res) {
@@ -46,7 +83,7 @@ app.post('/', function(req, res) {
 app.use(cookieParser());
 app.use(function (req, res, next) {
     cookie = req.cookies;
-    res.cookie('site', text.site, { maxAge: 900000, httpOnly: true });
+    res.cookie('site', text.site, { maxAge: 10000000, httpOnly: true });
     next();
 });
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News</title>
+    <link rel="stylesheet" href="/public">
+</head>
+<body>
+    <div class="container">
+        <nav><a class="mainPage" href="/"></a></nav>
+        <ul class="writers_list">
+            {{#each news}}
+            <li> {{ this }}</li>
+            {{else}}
+            <li>Список пуст</li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+</html>

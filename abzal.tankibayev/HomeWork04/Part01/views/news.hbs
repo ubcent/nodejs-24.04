@@ -1,0 +1,19 @@
+﻿<head>
+    <meta charset="utf-8">
+    <title>News</title>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css"/>
+</head>
+<body >
+<div class="container contentMargin backGroundColorMedium">
+    <nav>
+        <a class="mainTitle" href="/">Назад</a>
+    </nav>
+    <ul class="headerText backGroundColorDark">
+        {{#each news}}
+            <li>{{this}}</li>
+        {{else}}
+            <li>Список пуст</li>
+        {{/each}}
+    </ul>
+</div>
+</body>

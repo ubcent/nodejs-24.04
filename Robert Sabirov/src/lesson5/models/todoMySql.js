@@ -15,7 +15,7 @@ class Task {
                     return reject(err);
                 }
 
-                connection.query('select * from `todo`', (err, rows) => {
+                connection.query('select * from `tasks`', (err, rows) => {
                     if (err) {
                         return reject(err);
                     }
@@ -27,6 +27,24 @@ class Task {
         })
     }
 
+    static get(id) {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                connection.query('select * from `tasks` where `idtasks` = ?', id, (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    return resolve(result);
+                })
+            })
+        })
+    }
+
     static add(task) {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
@@ -34,7 +52,7 @@ class Task {
                     return reject(err);
                 }
 
-                connection.query('insert into `todo` set ?', task, (err, result) => {
+                connection.query('insert into `tasks` set ?', task, (err, result) => {
                     if (err) {
                         return reject(err);
                     }

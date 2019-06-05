@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
     const posts = await news(req.body.check);
-    res.render('news', {
+    res.render('todo', {
         news: posts,
     });
 })

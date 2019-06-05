@@ -71,10 +71,9 @@ class Task {
                     return reject(err);
                 }
 
-                const queryStr = 'UPDATE `tasks` SET `title`=?, `desc`=?, `status`=?, `priority`=? WHERE `idtasks` = ?;';
-                const arrayChanges = [changeSet.title, changeSet.desc, changeSet.status, changeSet.priority, id];
+                const queryStr = 'UPDATE `tasks` SET ? WHERE `idtasks` = ?;';
 
-                connection.query(queryStr, arrayChanges, (err, result) => {
+                connection.query(queryStr, [changeSet, id], (err, result) => {
                     if (err) {
                         return reject(err);
                     }

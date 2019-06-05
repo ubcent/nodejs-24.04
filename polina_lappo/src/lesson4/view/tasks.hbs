@@ -1,0 +1,84 @@
+<h1>Задачи</h1>
+<h2>Список задач</h2>
+{{#list tasks}}
+    <p><b>id: {{id}}</b> задача: {{newTask}}</p>
+{{/list}}
+<h2>Добавить задачу</h2>
+<div>
+    <label>Новая задача  <input type='text' name='newTask' id='new-task' required ></label><br>
+    <input type='submit' value='Добавить' id='btn-add'> 
+</div>
+<div id='add-status'></div>
+<h2>Обновить задачу</h2>
+<div>
+    <label>Id  <input type='text' name='id' id='id' required ></label><br>
+    <label>Заменить на   <input type='text' name='updateTask' id='update-task' required ></label><br>
+    <input type='submit' value='Обновить' id='btn-upd'>
+</div>
+<div id='upd-status'></div>
+<h2>Удалить задачу</h2>
+<div>
+    <label>Id  <input type='text' name='id-del' id='id-del' required ></label><br>
+    <input type='submit' value='Удалить' id='btn-del'>
+</div>
+<div id='del-status'></div>
+<script>
+
+    const addbtn = document.getElementById('btn-add');
+    addbtn.addEventListener('click', () => {
+        const data = {
+            newTask: document.getElementById('new-task').value,
+        };
+        fetch('/tasks', {  
+            method: 'post',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            const div = document.getElementById('add-status');
+            div.innerHTML = 'Добавлено'
+        })
+    })
+
+    const updbtn = document.getElementById('btn-upd');
+    updbtn.addEventListener('click', () => {
+        const data = {
+            id: document.getElementById('id').value,
+            updateTask: document.getElementById('update-task').value,
+        };
+        fetch('/tasks', {  
+            method: 'put',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            const div = document.getElementById('upd-status');
+            div.innerHTML = 'Обновлено'
+        })
+    })
+
+    const delbtn = document.getElementById('btn-del');
+    delbtn.addEventListener('click', () => {
+        const data = {
+            id: document.getElementById('id-del').value,
+        };
+        fetch('/tasks', {  
+            method: 'delete',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            const div = document.getElementById('del-status');
+            div.innerHTML = 'Удалено'
+        })
+    })
+</script>

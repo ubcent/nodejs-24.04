@@ -26,14 +26,12 @@ app.post('/', async (req, res) => {
 
 app.post('/:id', async (req, res) => {
     const task = await Task.update(req.params.id, req.body);
-
-    res.send(task);
+    res.sendStatus(200).send(task);
 })
 
 app.delete('/:id', async (req, res) => {
     const result = await Task.remove(req.params.id, req.body);
-
-    res.send(result);
+    res.sendStatus(200).send(result);
 })
 
 app.listen(8888, () => console.log(`Server started with port 8888`));

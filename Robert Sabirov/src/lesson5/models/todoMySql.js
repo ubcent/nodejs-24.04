@@ -65,15 +65,44 @@ class Task {
     }
 
     static update(id, changeSet) {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return reject(err);
+                }
 
-    }
+                const queryStr = 'UPDATE `tasks` SET `title`=?, `desc`=?, `status`=?, `priority`=? WHERE `idtasks` = ?;';
+                const arrayChanges = [changeSet.title, changeSet.desc, changeSet.status, changeSet.priority, id];
 
-    static complete(id) {
+                connection.query(queryStr, arrayChanges, (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
 
+                    connection.release();
+                    resolve(result.insertId);
+                });
+            })
+        })
     }
 
     static remove(id) {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    return reject(err);
+                }
 
+                connection.query('DELETE FROM `tasks` WHERE `idtasks` = ?;', id, (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    connection.release();
+                    resolve(result.insertId);
+                });
+            })
+        })
     }
 }
 

@@ -7,4 +7,4 @@ const todoSchema = new Schema({
     status: { type: Boolean }
 });
 
-module.exports = mongoose.model('Todos', todoSchema, 'todos');
+module.exports = mongoose.model('Todo', todoSchema, 'todos');

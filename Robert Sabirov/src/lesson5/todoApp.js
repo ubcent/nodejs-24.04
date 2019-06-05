@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://127.0.0.1:27019/todo', { useNewUrlParser: true });
+mongoose.connect('mongodb://127.0.0.1:27017/todo', { useNewUrlParser: true });
 
 const Todo = require('./models/todo');
 
@@ -31,6 +31,12 @@ app.post('/', async (req, res) => {
 
 app.post('/:id', async (req, res) => {
     const todo = await Todo.findByIdAndUpdate(req.params.id, req.body);
+
+    res.send(todo);
+})
+
+app.delete('/:id', async (req, res) => {
+    const todo = await Todo.findByIdAndRemove(req.params.id, req.body);
 
     res.send(todo);
 })

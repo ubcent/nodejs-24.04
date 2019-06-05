@@ -12,44 +12,74 @@ app.set('views', path.resolve(__dirname, 'views'));
 
 app.use('/public', express.static(path.resolve(__dirname, 'public')));
 
-app.get('/1c', (requ, res) => {
-    request('http://1c.ru', (err, req, html) => {
-        if (!err && req.statusCode === 200) {
-            const $ = cheerio.load(html);
-            const $news = $('.span6').eq(0).children('dl').children();
 
-            const $datesArray = $news.filter((index, elem) => {
-                return elem.tagName === 'dt';
-            });
+function get1CNews() {
+    return new Promise((resolve, reject) => {
+        request('http://1c.ru', (err, req, html) => {
+            if (!err && req.statusCode === 200) {
+                const $ = cheerio.load(html);
+                const $news = $('.span6').eq(0).children('dl').children();
 
-            const datesArray = $datesArray.map((index, elem) => {
-                return elem.children[0].children[0].data;
-            }).get();
+                const $datesArray = $news.filter((index, elem) => elem.tagName === 'dt');
 
-            const $newsArray = $news.filter((index, elem) => {
-                return elem.tagName === 'dd';
-            });
+                const datesArray = $datesArray.map((index, elem) => elem.children[0].children[0].data).get();
 
-            const newsItems = $newsArray.map((index, elem) => {
-                let strnews = ($(elem).text().replace(/(\s{22,})+/g, ''));
-                strnews = strnews.replace(/(\s{21,})+/g, '\n');
-                strnews = strnews.replace(/(курсы:)+/g, 'курсы:\n')+'\n'; //Курсы всегда оглашаются списками, оформим
-                return {
-                    newsDate: datesArray[index],
-                    newsText: strnews,
-                };
-            }).get();
-            
-            const newsObj = {
-                newsTitle: 'Новости фирмы 1С',
-                newsItems: newsItems,
+                const $newsArray = $news.filter((index, elem) => elem.tagName === 'dd');
+
+                const newsItems = $newsArray.map((index, elem) => {
+                    let strnews = ($(elem).text().replace(/(\s{22,})+/g, ''));
+                    strnews = strnews.replace(/(\s{21,})+/g, '\n');
+                    strnews = strnews.replace(/(курсы:)+/g, 'курсы:\n') + '\n'; //Курсы всегда оглашаются списками, оформим
+                    return {
+                        newsDate: datesArray[index],
+                        newsText: strnews,
+                    };
+                }).get();
+                resolve(newsItems);
             };
-            res.render('head');
-            res.render('news', newsObj);
-        };                
+        });
     });
+};
+
+function getCrimeaNews() {
+    return new Promise((resolve, reject) => {
+        request('https://crimea.ria.ru/', (err, req, html) => {
+            if (!err && req.statusCode === 200) {
+                const $ = cheerio.load(html);
+                const datesArray = $('.b-index__newsfeed-item-time').map((index, elem) => $(elem).text().trim()).get();
+                const newsArray = $('.b-index__newsfeed-item-title').map((index, elem) => $(elem).text().trim());
+                const newsItems = newsArray.map((index, elem) => {
+                    return {
+                        newsDate: datesArray[index],
+                        newsText: elem,
+                    };
+                }).get();                
+                resolve(newsItems);
+            };            
+        });
+    });
+};
+
+app.get('/1c', async (requ, res) => {
+    const newsItems = await get1CNews();
+    const newsObj = {
+        newsTitle: 'Новости фирмы 1С',
+        newsItems: newsItems,
+    };
+    res.render('news', newsObj);    
 });
 
-app.listen(8048, () => {
+app.get('/crimea', async (requ, res) => {
+    const newsItems = await getCrimeaNews();
+    const newsObj = {
+        newsTitle: 'Новости Крыма',
+        newsItems: newsItems,
+    };
+    res.render('news', newsObj);     
+});
+
+app.get('*', (req, res) => res.send('404'));
+
+app.listen(8050, () => {
     console.log('Server has been started!');
 });

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News</title>
+</head>
+<body>
+    <h1>Новости с сайта vc.ru</h1>
+    Популярное:
+    <ul>
+        <li><a href="/">За день</a></li>
+        <li><a href="/week">За неделю</a></li>
+        <li><a href="/month">За месяц</a></li>
+        <li><a href="/all">За все время</a></li>
+    </ul>
+    {{#each news}}
+        <div>
+            <h4>{{this.title}}</h4>
+            <p>Автор: {{this.author}}</p>
+            <p>{{this.text}}</p>
+        </div>
+    {{/each}}
+</body>
+</html>

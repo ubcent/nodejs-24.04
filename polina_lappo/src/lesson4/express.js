@@ -6,6 +6,8 @@ const handlebars = require('handlebars');
 
 var cookieParser = require('cookie-parser');
 
+const Tasks = require('./model/tasks');
+
 const app = express();
 
 const request = require('request');
@@ -86,6 +88,35 @@ app.post('*/news', (req, res) => {
         console.log('error')
     }
     
+});
+
+
+// lesson 5 
+
+app.get('/tasks', async (req, res) => {
+    const tasks = await Tasks.readAll();
+    console.log(tasks);
+    res.render('tasks', {tasks: tasks});
+});
+  
+app.get('/tasks/:id', async (req, res) => {
+    const task = await Tasks.read(req.params.id);
+    res.send(task)
+});
+
+app.post('/tasks', async (req, res) => {
+    const task = await Tasks.create(req.body);
+    res.send(task)
+});
+
+app.put('/tasks', async (req, res) => {
+    const task = await Tasks.update(req.body.id, req.body.updateTask);
+    res.send(task)
+});
+
+app.delete('/tasks', async (req, res) => {
+    const task = await Tasks.delete(req.body.id);
+    res.send(task)
 });
 
 app.listen(8080, () => {

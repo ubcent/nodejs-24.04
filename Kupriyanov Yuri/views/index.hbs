@@ -6,7 +6,25 @@
 </head>
 
 <body>
-    
+
+    <h2>Задачки:</h2>
+
+    <a href="/add">Добавить новую задачу</a>
+    <hr>
+
+    <div>
+    {{#each tasks}}
+        <div>
+        <a href="/task/{{id}}">Редактировать id: {{id}}</a> или <a href="/remove/{{id}}">Удалить id: {{id}}</a><br>
+        name: {{name}}<br>
+        comment: {{comment}}<br>
+        status: {{status}}<br>
+        <hr>
+        </div>
+    {{/each}}
+    </div>
+
+    <h2>А еще по прежнему можно почитать новости:</h2>
     <form method="post">
         <p>Выберите сайт для парсинга новойстей:
         <select name="site">

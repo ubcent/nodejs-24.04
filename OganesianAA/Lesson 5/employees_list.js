@@ -19,47 +19,59 @@ class EmployeesList {
         app.set('view engine', 'hbs');
         app.set('/views', path.resolve(__dirname, 'views'));
         app.use('/style', express.static(path.resolve(__dirname, 'style')));
-    }
-    middleWare(){
-        app.use((req, res, next)=>{
-            console.log('middleWare next');
-            next();
-        })
+        app.use('/script', express.static(path.resolve(__dirname, 'script')));
     }
     getRoute(){
         app.get('/main', async (req,res)=>{
             this.getAllEmployees()
                 .then( data => {
-                    // console.log({employees:data});
-                    console.log({data});
                     res.render('employeesList',{data});
                 })
                 .catch(err=>console.log(err))
             ;
         });
-        // app.get('/news', (req,res)=>{
-        //     res.render('news', this.news); // resolve from promise
-        // });
-        //ловим 404
+        app.get('/newEmployee', async (req,res)=>{
+            res.render('newEmployee',{});
+        });
+        app.get('/employee/:id', async (req,res)=>{
+            this.getAnEmployee(req.params.id)
+                .then(data=>{
+                    res.render('employee',{data});
+                })
+                .catch(err=>console.log(err));
+        });
         app.get('*', (req, res)=>{
-            res.send('<h1 class="404">404 page not found</h1>');
+            if(res.status === 404) {
+                res.send('<h1 class="404">404 page not found</h1>')
+            } else
+                res.redirect('/main');
         });
     }
     post(){
         app.post('/', (req, res)=>{
-            console.log(req.body);
-        });
-    }
-    listen(){
-        app.listen(8888, ()=>{
-            console.log('server has been started');
-        });
-    }
-    chromeLanuncher(){
-        chromeLauncher.launch({
-            startingUrl: 'http://localhost:8890/main'
-        }).then(chrome => {
-            console.log(`Chrome debugging port running on 8890`);
+            if (req.body){
+                if (req.body.newEmployee){
+                    this.addAnEmployee(req.body.newEmployee)
+                        .then(()=>{
+                            res.redirect('/main');
+                        })
+                        .catch(err=>console.log(err));
+                } else if (req.body.remove){
+                    this.removeAnEmployee(req.body.remove.id)
+                        .then(()=>{
+                            res.redirect('/main');
+                        })
+                        .catch(err=>console.log(err));
+                } else if (req.body.goupdate){
+                        res.redirect(`/employee/${req.body.goupdate.id}`);
+                } else if (req.body.update){
+                    this.updateAnEmployee(req.body.update)
+                        .then(()=>{
+                            res.redirect('/main');
+                        })
+                        .catch(err=>console.log(err));
+                }
+            }
         });
     }
     getAllEmployees(){
@@ -67,8 +79,8 @@ class EmployeesList {
             const dataDB = mysqlDB.getAll();
             dataDB
                 .then(data=>{
+                    this.list = {...data.result};
                     resolve({...data.result});
-                    // resolve({...data.fields});
                 })
                 .catch(err=>{
                     console.log(err);
@@ -80,34 +92,33 @@ class EmployeesList {
             const dataDB = mysqlDB.get(id);
             dataDB
                 .then(data=>{
-                    // resolve({...data.result});
-                    // resolve({...data.fields});
+                    resolve({...data.result});
                 })
                 .catch(err=>{
                     console.log(err);
                 });
         })
     }
-    addAnEmployee(birth_date, first_name, last_name, gender, hire_date){
+    addAnEmployee(item){
+        let {firstName, lastName, birthDate, hireDate, gender} = item;
         return new Promise((resolve, reject)=>{
-            const dataDB = mysqlDB.add(birth_date, first_name, last_name, gender, hire_date);
+            const dataDB = mysqlDB.add(firstName, lastName, birthDate, hireDate, gender);
             dataDB
                 .then(data=>{
-                    // resolve({...data.result});
-                    // resolve({...data.fields});
+                    resolve({...data});
                 })
                 .catch(err=>{
                     console.log(err);
                 });
         })
     }
-    updateAnEmployee(id, param, value){
+    updateAnEmployee(data){
+        let {id, firstName, lastName, birthDate, hireDate, gender} = data;
         return new Promise((resolve, reject)=>{
-            const dataDB = mysqlDB.update(id, param, value);
+            const dataDB = mysqlDB.update(id, firstName, lastName, birthDate, hireDate, gender);
             dataDB
                 .then(data=>{
-                    // resolve({...data.result});
-                    // resolve({...data.fields});
+                    resolve({...data.result});
                 })
                 .catch(err=>{
                     console.log(err);
@@ -119,19 +130,32 @@ class EmployeesList {
             const dataDB = mysqlDB.remove(id);
             dataDB
                 .then(data=>{
-                    // resolve({...data.result});
-                    // resolve({...data.fields});
+                    resolve({...data.result});
                 })
                 .catch(err=>{
                     console.log(err);
                 });
         })
     }
+    listen(){
+        app.listen(8888, ()=>{
+            console.log('server has been started');
+        });
+    }
+    chromeLanuncher(){
+        chromeLauncher.launch({
+            startingUrl: 'http://localhost:8888/main'
+        }).then(chrome => {
+            console.log(`Chrome debugging port running on 8888`);
+        });
+    }
     start(){//make static
         this.getRoute();
         this.post();
         this.listen();
+        this.chromeLanuncher();
     }
 }
 
 const newEmployeesList = new EmployeesList();
+module.exports = EmployeesList;

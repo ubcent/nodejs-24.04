@@ -3,45 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="./style/typography.css">
-    <link rel="stylesheet" href="./style/normalize.css">
-    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+<!--    <script async src="./script/jquery-3.4.1.js"></script>-->
+<!--    <script async src="./script/script.js"></script>-->
 </head>
 <body>
-    <div class="entry">
-        {{#if error}}
-            <h2>Error! </h2>
-        {{/if}}
-        <form action="/" method="POST" name="news">
-            <label>First name
-                <input type="text" name="news[name]" required>
-            </label>
-            <label>Last name
-                <input type="text" name="news[name]" required>
-            </label>
-            <label>Birth-date
-                <input type="date" name="news[name]" required>
-            </label>
-            <label>Hire-date
-                <input type="date" name="news[name]" required>
-            </label>
-
-            <button>Add</button>
-        </form>
-        <p>Employees list</p>
-        <div class="employeesList">
-            <ul class="people_list">
-                {{#each data}}
-                    <li>
-                        <a href="news/{{emp_no}}">
-                        {{emp_no}}
-                        Name: {{last_name}} {{first_name}}
-                        gender: {{ gender}}
-                        </a>
-                        <button>Remove</button>
-                    </li>
-                {{/each}}
-            </ul>
+    <div class="root">
+        <div class="container">
+            {{#if error}}
+                <h2>Error! </h2>
+            {{/if}}
+            <h3 class="hiThere">Hi Boss, here is our employees management dashboard.</h3>
+            <a href="/newEmployee" class="addEmpl">Add an employee</a>
+            <div class="employees">
+                <p>Employees list</p>
+                <ul class="employees_list">
+                    {{#each data}}
+                        <li class="employees-list-item">
+                            <form action="/" method="POST" name="goupdate" class="upd">
+                                <input type="text" class="employeeidhide" name="goupdate[id]" value="{{emp_no}}">
+                                <button>{{emp_no}} - </button>
+                            </form>
+                            <form action="/" method="POST" name="remove" class="rem">
+                                <span class="employee-name">Name: </span>{{last_name}} {{first_name}},
+                                <span class="employee-name">gender: {{ gender}}</span>
+                                <input type="text" class="employeeidhide" name="remove[id]" value="{{emp_no}}">
+                                <button><i class="fas fa-user-times"></i></button>
+                            </form>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
         </div>
     </div>
 </body>

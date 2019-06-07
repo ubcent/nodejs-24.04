@@ -8,7 +8,7 @@ var cheerio = require('cheerio');
 
 
 const listNews = [];
-
+//
 // request('http://www.rbc.ru/', function (error, response, html) {
 //     if (!error && response.statusCode === 200) {
 //         const $ = cheerio.load(html);

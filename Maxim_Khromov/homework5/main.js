@@ -1,14 +1,19 @@
 const express = require('express'); //-save
 const app = express();
 const bodyParser = require('body-parser');
-const templating = require('consolidate');
+//const templating = require('consolidate');
+const hbs = require('express-handlebars');
 const path = require('path');
 
 const router = require('./router.js');
 const config = require('./config.js');
 
 //Setup handlebars
-app.engine('hbs', templating.handlebars);
+app.engine('hbs', hbs({
+    extname: 'hbs',
+    defaultLayout: 'template',
+    layoutsDir: __dirname + '/views',
+}));
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 

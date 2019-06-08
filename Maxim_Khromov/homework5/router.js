@@ -2,8 +2,8 @@
 
  const appRouter = function (app) {
      app.get('/', (req, res) => {
-         res.render('template', {
-
+         res.render('./components/stopwatch/stopwatch', {
+             title: 'Jira Stopwatch',
          });
      });
  }

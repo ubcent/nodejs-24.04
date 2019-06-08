@@ -5,8 +5,9 @@ const consolidate = require('consolidate');
 const handlebars = require('handlebars');
 
 var cookieParser = require('cookie-parser');
-
-const Tasks = require('./model/tasks');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://192.168.99.100:32768/todo', { useNewUrlParser: true });
+const Task = require('./model/task');
 
 const app = express();
 
@@ -94,28 +95,28 @@ app.post('*/news', (req, res) => {
 // lesson 5 
 
 app.get('/tasks', async (req, res) => {
-    const tasks = await Tasks.readAll();
-    console.log(tasks);
+    const tasks = await Task.find();
     res.render('tasks', {tasks: tasks});
 });
   
 app.get('/tasks/:id', async (req, res) => {
-    const task = await Tasks.read(req.params.id);
+    const task = await Task.findById(req.params.id);
     res.send(task)
 });
 
 app.post('/tasks', async (req, res) => {
-    const task = await Tasks.create(req.body);
+    let task = new Task(req.body);
+    task = await task.save();
     res.send(task)
 });
 
 app.put('/tasks', async (req, res) => {
-    const task = await Tasks.update(req.body.id, req.body.updateTask);
+    const task = await Task.updateOne({_id: req.body.id}, {$set: {newTask: req.body.updateTask}});
     res.send(task)
 });
 
 app.delete('/tasks', async (req, res) => {
-    const task = await Tasks.delete(req.body.id);
+    const task = await Task.deleteOne({_id: req.body.id});
     res.send(task)
 });
 

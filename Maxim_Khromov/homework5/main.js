@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const hbs = require('express-handlebars');
 const path = require('path');
 
-const router = require('./router.js');
-const config = require('./config.js');
+const router = require('./router');
+const config = require('./config');
 
 //Setup handlebars
 app.engine('hbs', hbs({

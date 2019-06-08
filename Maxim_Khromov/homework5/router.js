@@ -1,11 +1,11 @@
  const request = require('request');
 
- const appRouter = {
+ const appRouter = function (app) {
      app.get('/', (req, res) => {
-         req.render('template', {
+         res.render('template', {
 
          });
      });
  }
 
- module.export = appRouter;
+ module.exports = appRouter;

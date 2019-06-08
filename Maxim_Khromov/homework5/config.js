@@ -1,1 +1,3 @@
-config
+const appConfig = {
+    port = 3000,
+}

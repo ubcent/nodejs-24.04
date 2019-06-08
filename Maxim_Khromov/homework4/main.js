@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const templating = require('consolidate');
-const path = require('path')
+const path = require('path');
 
 const routes = require('./routes/routes.js');
 

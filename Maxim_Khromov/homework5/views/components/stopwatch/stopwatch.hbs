@@ -3,7 +3,12 @@
     <span class="info__description">This is the greatest of stopwatches</span>
 </article>
 <article class="stopwatch">
-    <div class="stopwatch__display">{{currentTime}}</div>
+    <div class="stopwatch__display">
+        <h1><time id="time">00:00:00</time></h1>
+        <button id="start">start</button>
+        <button id="stop">stop</button>
+        <button id="clear">clear</button>
+    </div>
     <div class="stopwatch__form">Form TODO</div>
 </article>
 <script src="components/stopwatch/stopwatch.js"></script>

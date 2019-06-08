@@ -11,6 +11,11 @@
          });
 
      });
+
+     app.post('/', (req, res, next) => {
+         console.log(req.body.timerValue);
+         res.redirect('/');
+     });
  }
 
  module.exports = appRouter;

@@ -1,3 +1,7 @@
+import {
+    connection
+} from "mongoose";
+
 const http = new XMLHttpRequest();
 
 
@@ -43,7 +47,7 @@ stop.onclick = function () {
     let timerValue = `timerValue=${h1.textContent}`;
     console.log(timerValue);
 
-    http.open('POST', '/', true);
+    http.open('POST', '/laps', true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     http.onreadystatechange = function () { //Call a function when the state changes.
         if (http.readyState !== 4 && http.status !== 200) {
@@ -51,6 +55,7 @@ stop.onclick = function () {
         }
     }
     http.send(timerValue);
+
 }
 
 /* Clear button */

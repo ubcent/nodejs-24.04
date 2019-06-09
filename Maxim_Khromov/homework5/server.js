@@ -1,3 +1,4 @@
+require('./models/db');
 const express = require('express'); //-save
 const app = express();
 const bodyParser = require('body-parser');
@@ -5,15 +6,16 @@ const bodyParser = require('body-parser');
 const hbs = require('express-handlebars');
 const path = require('path');
 
-const db = require('./model/db')
-const router = require('./router');
 const config = require('./config');
+
+//import controllers
+const lapController = require('./controllers/lapController');
 
 //Setup handlebars
 app.engine('hbs', hbs({
     extname: 'hbs',
     defaultLayout: 'template',
-    layoutsDir: __dirname + '/views',
+    layoutsDir: __dirname + '/views/layouts',
 }));
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
@@ -29,4 +31,5 @@ app.listen(config.port, () => {
     console.log(`Success! Server is launched on port: ${config.port}.`);
 });
 
-router(app);
+//import controllers
+app.use('/laps', lapController);

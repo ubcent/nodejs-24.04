@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const hbs = require('express-handlebars');
 const path = require('path');
 
+const db = require('./model/db')
 const router = require('./router');
 const config = require('./config');
 
@@ -22,8 +23,10 @@ app.use(express.static(path.join(__dirname, '/views/')));
 app.use(express.urlencoded({
     extended: true,
 }));
-app.use(express.json());
+app.use(bodyParser.json());
+
+app.listen(config.port, () => {
+    console.log(`Success! Server is launched on port: ${config.port}.`);
+});
 
 router(app);
-
-app.listen(config.port, () => console.log(`App is listenning port: ` + JSON.stringify(config.port)));

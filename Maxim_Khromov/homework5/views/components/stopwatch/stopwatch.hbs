@@ -9,6 +9,12 @@
         <button id="stop">stop</button>
         <button id="clear">clear</button>
     </div>
-    <div class="stopwatch__form">Form TODO</div>
+    <div class="stopwatch__form">
+        {{#each list}}
+        <ul>
+            <li>{{_id}}<br>{{time}}</li>
+        </ul>
+        {{/each}}
+    </div>
 </article>
 <script src="components/stopwatch/stopwatch.js"></script>

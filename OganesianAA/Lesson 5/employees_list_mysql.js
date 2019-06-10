@@ -23,22 +23,15 @@ class EmployeesList {
     }
     getRoute(){
         app.get('/main', async (req,res)=>{
-            this.getAllEmployees()
-                .then( data => {
-                    res.render('employeesListMysql',{data});
-                })
-                .catch(err=>console.log(err))
-            ;
+            const data = await this.getAllEmployees();
+            const render = res.render('employeesListMysql',{data});
         });
         app.get('/newEmployee', async (req,res)=>{
             res.render('newEmployee',{});
         });
         app.get('/employee/:id', async (req,res)=>{
-            this.getAnEmployee(req.params.id)
-                .then(data=>{
-                    res.render('employeeMysql',{data});
-                })
-                .catch(err=>console.log(err));
+            const data = await this.getAnEmployee(req.params.id);
+            const render =  res.render('employeeMysql',{data});
         });
         app.get('*', (req, res)=>{
             if(res.status === 404) {
@@ -48,28 +41,19 @@ class EmployeesList {
         });
     }
     post(){
-        app.post('/', (req, res)=>{
+        app.post('/',async (req, res)=>{
             if (req.body){
                 if (req.body.newEmployee){
-                    this.addAnEmployee(req.body.newEmployee)
-                        .then(()=>{
-                            res.redirect('/main');
-                        })
-                        .catch(err=>console.log(err));
+                    const data = await this.addAnEmployee(req.body.newEmployee);
+                    const redirect = res.redirect('/main');
                 } else if (req.body.remove){
-                    this.removeAnEmployee(req.body.remove.id)
-                        .then(()=>{
-                            res.redirect('/main');
-                        })
-                        .catch(err=>console.log(err));
+                    const data = await this.removeAnEmployee(req.body.remove.id);
+                    const redirect = res.redirect('/main');
                 } else if (req.body.goupdate){
                         res.redirect(`/employee/${req.body.goupdate.id}`);
                 } else if (req.body.update){
-                    this.updateAnEmployee(req.body.update)
-                        .then(()=>{
-                            res.redirect('/main');
-                        })
-                        .catch(err=>console.log(err));
+                    const data = await this.updateAnEmployee(req.body.update);
+                    const redirect = res.redirect('/main');
                 }
             }
         });

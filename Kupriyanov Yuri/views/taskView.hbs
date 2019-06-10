@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h2>{{title}}</h2>
+    <form method="post">
+        id: <input type="text" name="id" value = "{{task.id}}" placeholder="задача" required ></br>
+        name: <input type="text" name="name" value = "{{task.name}}" placeholder="задача" required ></br>
+        status: <input type="text" name="status" value = "{{task.status}}" placeholder="статус 1,2,3" required ></br>
+        comment: <textarea name="comment" id="" cols="10" rows="5" placeholder="комментарий" required>{{task.comment}}</textarea></br>
+        <input type="submit" value="обновить">
+    </form>
+</body>
+</html>

@@ -1,15 +1,14 @@
 require('./models/db');
-const express = require('express'); //-save
+const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-//const templating = require('consolidate');
 const hbs = require('express-handlebars');
 const path = require('path');
 
 const config = require('./config');
 
 //import controllers
-const lapController = require('./controllers/lapController');
+const peopleController = require('./controllers/peopleController');
 
 //Setup handlebars
 app.engine('hbs', hbs({
@@ -32,4 +31,4 @@ app.listen(config.port, () => {
 });
 
 //import controllers
-app.use('/laps', lapController);
+app.use('/people', peopleController);

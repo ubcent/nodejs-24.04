@@ -2,4 +2,8 @@ body {
   margin: 0;
   padding: 0; }
 
-/*# sourceMappingURL=main.css.map */
+.list__person {
+  margin: 10px 0 20px 0; }
+
+.person__description {
+  margin: 0; }

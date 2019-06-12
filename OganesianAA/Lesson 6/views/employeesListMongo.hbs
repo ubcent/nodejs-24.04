@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="root">
+        <div class="container">
+            {{#if error}}
+                <h2>Error! </h2>
+            {{/if}}
+            <h3 class="hiThere">Hi Boss, here is our employees management dashboard.</h3>
+            <a href="/newEmployee" class="addEmpl">Add an employee</a>
+            <div class="employees">
+                <p>Employees list</p>
+                <ul class="employees_list">
+                    {{#each data}}
+                        <li class="employees-list-item">
+                            <form action="/" method="POST" name="goupdate" class="upd">
+                                <input type="text" class="employeeidhide" name="goupdate[id]" value="{{_id}}">
+                                <button>{{emp_no}} - </button>
+                            </form>
+                            <form action="/" method="POST" name="remove" class="rem">
+                                <input type="text" class="employeeidhide" name="remove[id]" value="{{_id}}">
+                                <span class="employee-name">Name: </span>{{lastName}} {{firstName}},
+                                <span class="employee-name">gender: {{gender}}</span>
+                                <button><i class="fas fa-user-times"></i></button>
+                            </form>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>

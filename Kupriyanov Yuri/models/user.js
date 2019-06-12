@@ -14,11 +14,11 @@ class User {
         return affectedRows;
     }
 
-    static update(id, user) {
+    static async update(id, user) {
         return execQuery(`UPDATE ${table} SET ? WHERE id =?`, [user, id]);
     }
 
-    static getAll() {
+    static async getAll() {
         return execQuery(`SELECT * FROM  ${table}`);
     }
 

@@ -1,0 +1,16 @@
+html,
+body {
+    margin: 0 auto;
+}
+
+.newsTitle {
+    color:chocolate;
+}
+
+.newsDate{
+    color: cadetblue;
+    font-style: oblique;
+}
+.newsText {
+    color: cornflowerblue;
+}

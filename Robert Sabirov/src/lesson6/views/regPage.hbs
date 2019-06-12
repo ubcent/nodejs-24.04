@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/public/normalize.css">
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Регистрация</h1>
+        <p>Введите данные для регистрации нового пользователя</p>
+        <form method="post" action="/reg">
+            <label for="username">Логин:</label>
+            <input type="text" name="username" id="username">
+            <label for="name">Имя:</label>
+            <input type="text" name="name" id="name">
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" id="password">
+            <button type="submit">Зарегистрировать</button>
+        </form>
+    </div>
+</body>
+
+</html>

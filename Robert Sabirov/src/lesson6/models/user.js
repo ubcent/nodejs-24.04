@@ -8,10 +8,6 @@ const userSchema = new Schema({
 });
 
 userSchema.methods.checkPassword = function (password) {
-    console.log('checkPassord');
-
-    console.log('this p: ' + this.password);
-    console.log('pass: ' + password);
     return this.password === password;
 };
 

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const consolidate = require('consolidate');
 const path = require('path');
+const session = require('cookie-session');
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 
@@ -11,8 +12,7 @@ app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));
 
-// app.use(cookie());
-// app.use(session({ keys: ['testingServer'] }));
+app.use(session({ keys: ['testingServer'] }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,10 +27,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new Strategy(async (username, password, done) => {
-    console.log(`In auth function: u - ${username}, p - ${password}`)
     const user = await User.findOne({ username });
-    console.log(`user:`);
-    console.dir(user);
     if (user && user.checkPassword(password)) {
         delete user.password;
         return done(null, user);
@@ -40,13 +37,10 @@ passport.use(new Strategy(async (username, password, done) => {
 }));
 
 passport.serializeUser((user, done) => {
-    console.log('serializeUser')
     done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-
-    console.log('deserializeUser')
     const user = await User.findById(id);
     done(null, user);
 });
@@ -75,13 +69,10 @@ const authHandler = passport.authenticate('local', {
     failureRedirect: '/auth'
 })
 
-app.post('/auth', passport.authenticate('local', {
-    successRedirect: '/user',
-    failureRedirect: '/auth'
-}));
+app.post('/auth', authHandler);
 
 const mustBeAuthenticated = (req, res, next) => {
-    if (req.user) {
+    if (req.isAuthenticated()) {
         next();
     } else {
         res.redirect('/auth');

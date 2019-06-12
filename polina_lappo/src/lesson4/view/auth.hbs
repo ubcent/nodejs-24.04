@@ -1,0 +1,22 @@
+<h2>Авторизация</h2>
+<div>
+    <input type="text" name="login" id="login"><br>
+    <input type='password' name='password' id='password'><br>
+    <input type='submit' value='Войти' id='btn'>
+</div>
+<script>
+    const btn = document.getElementById('btn');
+    btn.addEventListener('click', () => {
+        const data = {
+            username: document.getElementById('login').value,
+            password: document.getElementById('password').value
+        };
+        fetch('/auth', {  
+            method: 'post',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        })
+    })
+</script>

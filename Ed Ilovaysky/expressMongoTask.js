@@ -4,7 +4,7 @@ const consolidate = require('consolidate');
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb:/localhost:32776/taskdb', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:32769/taskdb', { useNewUrlParser: true });
 const Tasks = require('./models/mongoTask');
 
 const app = express(); // CREATING EXPRESS-APP OBJECT

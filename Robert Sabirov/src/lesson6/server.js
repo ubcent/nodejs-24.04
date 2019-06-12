@@ -4,7 +4,10 @@ const consolidate = require('consolidate');
 const path = require('path');
 const session = require('cookie-session');
 const passport = require('passport');
-const Strategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+
+const PORT = 13013;
 
 const app = express();
 
@@ -26,7 +29,7 @@ const User = require('./models/user');
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new Strategy(async (username, password, done) => {
+passport.use(new LocalStrategy(async (username, password, done) => {
     const user = await User.findOne({ username });
     if (user && user.checkPassword(password)) {
         delete user.password;
@@ -35,6 +38,22 @@ passport.use(new Strategy(async (username, password, done) => {
         return done(null, false);
     }
 }));
+
+passport.use(new FacebookStrategy({
+    clientID: '687343025036707', //FACEBOOK_APP_ID
+    clientSecret: 'f0f030262371f3c3e9f22901296b4b4a', //FACEBOOK_APP_SECRET
+    callbackURL: `http://localhost:${PORT}/auth/facebook/callback`
+},
+    async (accessToken, refreshToken, profile, done) => {
+        const user = await User.findOne({ facebookId: profile.id });
+        if (user) {
+            delete user.password;
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    }
+));
 
 passport.serializeUser((user, done) => {
     done(null, user._id);
@@ -64,12 +83,15 @@ app.get('/auth', (req, res) => {
     res.render('loginPage');
 })
 
-const authHandler = passport.authenticate('local', {
+const redirestions = {
     successRedirect: '/user',
     failureRedirect: '/auth'
-})
+};
 
-app.post('/auth', authHandler);
+app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook/callback', passport.authenticate('facebook', redirestions));
+
+app.post('/auth', passport.authenticate('local', redirestions));
 
 const mustBeAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -96,6 +118,6 @@ app.get('/logout', (req, res) => {
     res.redirect('/auth');
 })
 
-app.listen(13013, () => {
-    console.log('Server has been started (port 13013)');
+app.listen(PORT, () => {
+    console.log(`Server has been started (port ${PORT})`);
 })

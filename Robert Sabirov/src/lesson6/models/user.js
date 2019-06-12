@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     username: { type: String },
     password: { type: String },
-    name: { type: String }
+    name: { type: String },
+    facebookId: { type: String }
 });
 
 userSchema.methods.checkPassword = function (password) {

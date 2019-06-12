@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h2>{{title}}</h2>
+    <form action="/auth" method="post">
+        <input type="text" name="username" value = "{{user.username}}" placeholder="имя пользователя" required > <br>
+        <input type="password" name="password" value = "{{user.password}}" placeholder="пароль" required > <br>
+        <input type="submit" value="войти">
+    </form>
+</body>
+</html>

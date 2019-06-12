@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<title>{{title}}</title>
+</head>
+
+<body>
+
+    <h2>{{title}}</h2>
+
+    <a href="/">ок пойдем на главную</a>
+    <hr>
+
+    <div>
+    {{#each users}}
+        <div>
+        <a href="/user/settings/{{id}}">Профиль id: {{id}}</a> или <a href="/user/remove/{{id}}">Удалить id: {{id}}</a><br>
+        username: {{username}}<br>
+        id: {{id}}<br>
+        <hr>
+        </div>
+    {{/each}}
+    </div>
+
+
+</body>
+</html>

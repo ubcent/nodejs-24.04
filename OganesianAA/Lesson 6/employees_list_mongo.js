@@ -32,18 +32,10 @@ class EmployeesList {
         app.use(passport.initialize());
         app.use(passport.session());
         passport.use(new LocalStrategy(async (username, password, done)=>{
-            console.log('1 passport.use username: ',username, 'password: ', password);
             const user = await User.findOne({username});
-            console.log('2 passport.use User.findOne: ',user);
-            if (user){
-                console.log(user.validPassword(password));
-            }
-
             if(!user){
-                console.log('3 !user');
                 return done(null, false, { message: 'Incorrect username.' });
             } else if (!user.validPassword(password)){
-                console.log('4 !user.validPassword(password)');
                 return done(null, false, { message: 'Incorrect password.' });
             }   else{
                 user.password = undefined;
@@ -66,12 +58,6 @@ class EmployeesList {
     getRoute(){
         app.get('/login', async (req, res)=>{
            res.render('loginForm', {});
-        });
-        app.get('/login/:data', async (req, res, next)=>{
-            let data = JSON.parse(req.params.data);
-            console.log('getRoute method, parsed data:',data);
-
-            res.redirect('/main');
         });
 
         app.get('/main', async (req,res)=>{
@@ -110,7 +96,6 @@ class EmployeesList {
     post(){
         app.post('/', (req, res)=>{
             if (req.body){
-                // console.log('post method: /', req.body);
                 if (req.body.newEmployee){
                     res.redirect(`/newEmployee/${JSON.stringify(req.body.newEmployee)}`);
                 } else if (req.body.remove){
@@ -128,44 +113,19 @@ class EmployeesList {
             passport.authenticate('local',
                 (err, user, info)=>{
                 if (err) {
-                    console.log('4 passport.authenticate err: ', err);
                     return next(err);
                 }
                 if (!user) {
-                    console.log('5 passport.authenticate info: ', info);
                     return res.redirect('/login');
                 }
                 req.logIn(user, (err)=>{
                     if (err) {
-                        console.log('6 passport.authenticate err: ', err);
                         return next(err);
                     }
-                    console.log('Successful login');
                     return res.redirect('/main');
                 });
             })(req, res, next);
-
-            /////////////
-            // passport.authenticate('local',
-            //     (err, user, info)=>{
-            //     if (err){return next(err)}
-            //     if(!user){return res.redirect('/login')}
-            //
-            //     console.log('4 passport.authenticate err: ', err);
-            //     console.log('5 passport.authenticate user: ', user);
-            //     console.log('6 passport.authenticate info: ', info);
-            //
-            // },
-            // (req, res)=>{
-            //     res.redirect('/main');
-            //     console.log(1);
-            //     console.log(req);
-            //     console.log(res);
-            //     // successRedirect: res.redirect('/main');
-            //
-            // })
-        }
-        );
+        });
     }
     listen(){
         app.listen(8889, ()=>{

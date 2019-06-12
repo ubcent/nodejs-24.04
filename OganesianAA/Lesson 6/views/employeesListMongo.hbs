@@ -23,13 +23,14 @@
                     {{#each data}}
                         <li class="employees-list-item">
                             <form action="/" method="POST" name="goupdate" class="upd">
+                                <button>-- </button>
                                 <input type="text" class="employeeidhide" name="goupdate[id]" value="{{_id}}">
-                                <button>{{emp_no}} - </button>
+                                <span class="employee-name">Name: </span>{{lastName}} {{firstName}},
+                                <span class="employee-name">gender: {{gender}}</span>
                             </form>
                             <form action="/" method="POST" name="remove" class="rem">
                                 <input type="text" class="employeeidhide" name="remove[id]" value="{{_id}}">
-                                <span class="employee-name">Name: </span>{{lastName}} {{firstName}},
-                                <span class="employee-name">gender: {{gender}}</span>
+
                                 <button><i class="fas fa-user-times"></i></button>
                             </form>
                         </li>

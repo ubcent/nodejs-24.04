@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Задания</h2>
+    <ul>
+        {{#each tasks}}
+        <li>{{this.id}} {{this.desc}} {{this.state}}</li>
+        {{/each}}
+    </ul>
+    
+    <label>Новое задание<input type="text" id="new-task"></label>
+    <input type="submit" id="add-btn" value="Добавить"><br><br>
+    
+    <label>Удалить задание (id)<input type="text" id="del-task"></label>
+    <input type="submit" id="del-btn" value="Удалить"><br><br>
+    
+    <label>Пометить задание как выполненное (id)<input type="text" id="upd-task"></label>
+    <input type="submit" id="upd-btn" value="Выполнить"><br><br>
+    
+</body>
+
+<script>
+    const addBtn = document.getElementById('add-btn');
+    
+    addBtn.addEventListener('click', () => {
+       fetch('/tasks', {  
+            method: 'POST',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify({
+                state: false,
+                desc: document.getElementById('new-task').value,
+            }),
+        }).then(response => window.location.reload());
+    });
+    
+    const delBtn = document.getElementById('del-btn');
+    
+    delBtn.addEventListener('click', () => {
+       fetch('/tasks', {  
+            method: 'DELETE',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify({
+                id: document.getElementById('del-task').value.replace(/\s/,''),
+            }),
+        }).then(response => window.location.reload());
+    });
+    
+    const updBtn = document.getElementById('upd-btn');
+    
+    updBtn.addEventListener('click', () => {
+       fetch('/tasks', {  
+            method: 'PUT',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify({
+                id: document.getElementById('upd-task').value.replace(/\s/,''),
+            }),
+        }).then(response => window.location.reload());
+    });
+    
+</script>
+</html>

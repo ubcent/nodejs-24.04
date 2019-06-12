@@ -1,14 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const path = require('path');
+const consolidate = require ('consolidate');
 const Strategy = require('passport-local').Strategy;
 const Task = require('./models/task');
 const  User = require('./models/user');
+
 
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
+app.engine('html', consolidate.handlebars);
+app.set('view engine', 'html');
+app.set('views', path.resolve(__dirname, 'pages'));
+
+
 
 mongoose.connect('mongodb://192.168.99.100:32768/local', {useNewUrlParser: true});
 
@@ -27,7 +35,7 @@ passport.serializeUser((user, done) =>{
 });
 
 passport.deserializeUser(async (id, done) => {
-	const user = User.findById(id);
+	const user = await User.findById(id);
 	done(null, user);
 });
 
@@ -46,20 +54,27 @@ const  mustBeAuthenticated = (req, res, next) => {
 
 app.all('/user*', mustBeAuthenticated);
 
-// страница регистрации
-//app.get('/registration', (req, res) => {});
+// home
+app.get('/', (req, res) => {
+	res.render('home')
+});
 
+// страница регистрации
+app.get('/registration', (req, res) => {
+	res.render('registration')
+});
 
 //добавить пользователя
 app.post('/registration',async (req, res) => {
 	let user = new User(req.body);
 	user = await user.save();
 	res.send(user);
-	res.redirect('/')
 });
 
 // страница авторизации
-//app.get('/login', (req, res) => {});
+app.get('/login', (req, res) => {
+	res.render('login')
+});
 
 //авторизация
 app.post('/login', authHandler);
@@ -67,13 +82,16 @@ app.post('/login', authHandler);
 
 app.get('/logout', (reg, res) => {
 	reg.logout();
-	res.redirect('/login');
+	res.redirect('/');
 });
 
 //получить все задачи
 app.get('/user/tasks', async (req, res) => {
 	const tasks = await Task.find();
-	res.send(tasks);
+	res.render('tasks', {
+		tasks: tasks,
+		title: 'Список заданий'
+	});
 });
 
 //получить одну задачу по ID

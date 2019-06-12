@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tasks</title>
+</head>
+<body>
+<div>
+	<h1>{{title}}</h1>
+</div>
+<ol>
+	{{#each tasks}}
+	<li>Задание: {{this.title}}<br>
+		Дата: {{this.date}}<br>
+		Описание: {{this.description}}<br>
+		ID:{{this._id}}
+		{{#if complete}}
+		<p>Выполнено: Да</p>
+		{{else}}
+		<p>Выполнено: Нет</p>
+		{{/if}}
+	</li>
+	{{/each}}
+</ol>
+</body>
+</html>

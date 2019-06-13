@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+<!--    <script async src="./script/jquery-3.4.1.js"></script>-->
+<!--    <script async src="./script/script.js"></script>-->
+</head>
+<body>
+<div class="root">
+    <div class="container">
+        {{#if error}}
+            <h2>Error! </h2>
+        {{/if}}
+        <p>Hi there, after you finish with form please hit the Add button</p>
+        <a href="/main">Go to main</a>
+        <div class="addForm">
+            <form action="/" method="POST" name="newEmployee">
+                <label>First name
+                    <input class="firstName" type="text" name="newEmployee[firstName]" required>
+                </label>
+                <label>Last name
+                    <input class="lastName" type="text" name="newEmployee[lastName]" required>
+                </label>
+                <label>Birth-date
+                    <input class="birthDate" type="date" name="newEmployee[birthDate]" required>
+                </label>
+                <label>Hire-date
+                    <input class="hireDate" type="date" name="newEmployee[hireDate]" required>
+                </label>
+                <label>Gender
+                    <input class="gender" list="mylist" name="newEmployee[gender]" required>
+                </label>
+                <datalist id="mylist">
+                    <option value="M" label="Male"></option>
+                    <option value="F" label="Female"></option>
+                </datalist>
+                <button class="addBtn">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>

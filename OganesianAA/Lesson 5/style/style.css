@@ -1,33 +1,107 @@
 .root{
-    display: block;
+    background:
+            radial-gradient(ellipse at top left, rgba(96, 207, 255, 0.16), transparent),
+            radial-gradient(ellipse at top right, rgba(124, 255, 20, 0.16), transparent),
+            radial-gradient(ellipse at bottom left, rgba(255, 253, 22, 0.16), transparent),
+            radial-gradient(ellipse at bottom right, rgba(255, 109, 110, 0.16), transparent);
+    background-repeat: no-repeat;
     width: 800px;
-    margin: 0 auto;
+    height: 800px;
 }
-
-.entry{
-    background: #f0f0f0;
+.container{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    /*width: 600px;*/
     margin: 0 auto;
+    padding: 20px;
+}
+.hiThere{
+    display: flex;
 }
 label{
-    color: black;
-}
-.entry form{
     display: flex;
-    width: 800px;
-    justify-content: space-evenly;
+    flex-flow: column;
+    align-items: center;
+    color: black;
+    width: 160px;
+}
+input{
+    width: 150px;
+}
+.addForm form{
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
 button{
-    width: 100px;
-    height: 30px;
-    color: black;
+    color: #696969;
+    border: none;
+    background: none;
+    margin: 1px 10px;
+    width: 80px;
+    /*height: 30px;*/
+    border-radius: 5%;
+}
+button:hover{
+    border: 1px solid lightskyblue;
+    margin: 0 10px;
 }
 
-
-/*ul {*/
-/*    padding-left: 0;*/
-/*    margin: 0;*/
-/*}*/
+ul {
+    padding-left: 0;
+    margin: 0;
+}
 
 ul > li {
     list-style: none;
+}
+.addForm{
+    border: 1px solid grey;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.employees-list-item{
+    display: flex;
+    flex-wrap: wrap;
+    width: 600px;
+}
+.employees-list-item form.rem{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.employees{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    border: 1px solid grey;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.employees-list{
+    margin: 0 auto;
+}
+.employee-name{
+    color: grey;
+}
+.addEmpl{
+    font-weight: bold;
+}
+.employeeidhide, .birthDateP, .hireDateP{
+    display: none;
+}
+.upd{
+    width: 50px;
+    margin-right: 40px;
+}
+.rem{
+    width: 400px;
+}
+.hide{
+    display: none;
 }

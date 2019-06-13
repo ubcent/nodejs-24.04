@@ -14,11 +14,11 @@ class Task {
         return affectedRows;
     }
 
-    static update(id, task) {
+    static async update(id, task) {
         return execQuery(`UPDATE ${table} SET ? WHERE id =?`, [task, id]);
     }
 
-    static getAll() {
+    static async getAll() {
         return execQuery(`SELECT * FROM  ${table}`);
     }
 

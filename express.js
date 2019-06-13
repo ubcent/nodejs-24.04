@@ -5,6 +5,7 @@ const express = require('express');
 const consolidate = require('consolidate');
 const mongoose = require('mongoose');
 
+// typeorm
 mongoose.connect('mongodb://192.168.99.100:32773/stream', { useNewUrlParser: true });
 
 const User = require('./models/user');
@@ -22,6 +23,7 @@ const users = {
   }
 }
 
+// SOAP BFF
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));

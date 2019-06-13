@@ -1,60 +1,85 @@
-const readline  = require('readline');
-const request   = require('request');
-const cheerio   = require('cheerio');
+const express = require('express');
+const request = require('request');
+const cheerio = require('cheerio');
+const path = require('path');
+const consolidate = require('consolidate');
 
-request('http://1c.ru', (err, req, html) => {
-    if (!err && req.statusCode === 200){
-        const $ = cheerio.load(html.toString());
-        const $news = $('.span6').eq(0).children('dl').children();
-        
-        const $datesArray = $news.filter((index, elem) => {
-            return elem.tagName === 'dt';
+const app = express();
+
+app.engine('hbs', consolidate.handlebars);
+app.set('view engine', 'hbs');
+app.set('views', path.resolve(__dirname, 'views'));
+
+app.use('/public', express.static(path.resolve(__dirname, 'public')));
+
+
+function get1CNews() {
+    return new Promise((resolve, reject) => {
+        request('http://1c.ru', (err, req, html) => {
+            if (!err && req.statusCode === 200) {
+                const $ = cheerio.load(html);
+                const $news = $('.span6').eq(0).children('dl').children();
+
+                const $datesArray = $news.filter((index, elem) => elem.tagName === 'dt');
+
+                const datesArray = $datesArray.map((index, elem) => elem.children[0].children[0].data).get();
+
+                const $newsArray = $news.filter((index, elem) => elem.tagName === 'dd');
+
+                const newsItems = $newsArray.map((index, elem) => {
+                    let strnews = ($(elem).text().replace(/(\s{22,})+/g, ''));
+                    strnews = strnews.replace(/(\s{21,})+/g, '\n');
+                    strnews = strnews.replace(/(курсы:)+/g, 'курсы:\n') + '\n'; //Курсы всегда оглашаются списками, оформим
+                    return {
+                        newsDate: datesArray[index],
+                        newsText: strnews,
+                    };
+                }).get();
+                resolve(newsItems);
+            };
         });
-        
-        const datesArray = $datesArray.map((index, elem) => {
-            return elem.children[0].children[0].data;
-        }).get();        
-                
-        const $newsArray = $news.filter((index, elem) => {
-            return elem.tagName === 'dd';
-        });        
-          
-        console.log('Новости фирмы 1С\n');
-        $newsArray.each((index, elem) => {
-            console.log(datesArray[index]);
-            let strnews = ($(elem).text().replace(/(\s{22,})+/g, ''));              
-            strnews = strnews.replace(/(\s{21,})+/g, '\n');              
-            console.log(strnews.replace(/(курсы:)+/g,'курсы:\n'), '\n'); //Курсы всегда оглашаются списками, оформим
+    });
+};
+
+function getCrimeaNews() {
+    return new Promise((resolve, reject) => {
+        request('https://crimea.ria.ru/', (err, req, html) => {
+            if (!err && req.statusCode === 200) {
+                const $ = cheerio.load(html);
+                const datesArray = $('.b-index__newsfeed-item-time').map((index, elem) => $(elem).text().trim()).get();
+                const newsArray = $('.b-index__newsfeed-item-title').map((index, elem) => $(elem).text().trim());
+                const newsItems = newsArray.map((index, elem) => {
+                    return {
+                        newsDate: datesArray[index],
+                        newsText: elem,
+                    };
+                }).get();                
+                resolve(newsItems);
+            };            
         });
+    });
+};
+
+app.get('/1c', async (requ, res) => {
+    const newsItems = await get1CNews();
+    const newsObj = {
+        newsTitle: 'Новости фирмы 1С',
+        newsItems: newsItems,
     };
-    translate();
+    res.render('news', newsObj);    
 });
 
-function translate() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
+app.get('/crimea', async (requ, res) => {
+    const newsItems = await getCrimeaNews();
+    const newsObj = {
+        newsTitle: 'Новости Крыма',
+        newsItems: newsItems,
+    };
+    res.render('news', newsObj);     
+});
 
-    console.log('Введите текст для перевода на русский язык (exit - выход)');
+app.get('*', (req, res) => res.send('404'));
 
-    rl.on('line', (userText) => {
-        if (userText === 'exit') {
-            rl.close();            
-        } else {
-            request({
-                method: 'POST',
-                uri: `https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20190522T091046Z.916ae34ccf457875.bfcc3d1ad8074e27a7cb5e6e4138ee32627c0cd2&text=${userText}}&lang=ru`,}, function (error, response, body) {
-                    if (error) {
-                        console.error(error);
-                    } else {
-                        const answ = JSON.parse(body).text;
-                        if (answ.length > 0) {
-                            console.log(answ[0].replace(/[{}]+/g, ''), '\n\nВведите текст для перевода на русский язык (exit - выход)');    
-                        };            
-                        //console.log(response.statusCode);           
-                    };
-            });
-        };
-    });
-}
+app.listen(8050, () => {
+    console.log('Server has been started!');
+});

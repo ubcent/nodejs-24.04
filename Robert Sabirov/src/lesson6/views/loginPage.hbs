@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Страница входа</title>
+    <link rel="stylesheet" href="/public/normalize.css">
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Страница входа</h1>
+        <p>Для получения доступа к остальным ресурсам
+            сайта требуется выполнить вход под зарегистрированным
+            пользователем.</p>
+        <p>Сайт находится на стадии разработки</p>
+        <a href="/auth/facebook">зайти при помощи Facebook</a>
+        <form method="post" action="/auth">
+            <label for="username">Логин:</label>
+            <input type="text" name="username" id="login">
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" id="password">
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+</body>
+
+</html>

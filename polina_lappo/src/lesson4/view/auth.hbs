@@ -1,16 +1,18 @@
 <h2>Авторизация</h2>
 <div>
-    <input type="text" name="username" id="username"><br>
-    <input type='password' name='password' id='password'><br>
+    <input type="text" name="username" id="username" placeholder='юзернейм'><br>
+    <input type='password' name='password' id='password' placeholder='пароль'><br>
+    <lable><input type='checkbox' name='remember' id='remember'>Запомнить меня</lable><br>
     <input type='submit' value='Войти' id='btn'>
 </div>
-<div id="status"></div>
+<div id='status'></div>
 <script>
     const btn = document.getElementById('btn');
     btn.addEventListener('click', () => {
         const data = {
             username: document.getElementById('username').value,
-            password: document.getElementById('password').value
+            password: document.getElementById('password').value,
+            remember: document.getElementById('remember').value
         };
         fetch('/auth', {  
             method: 'post',  

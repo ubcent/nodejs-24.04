@@ -6,8 +6,9 @@ const handlebars = require('handlebars');
 
 var cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://192.168.99.100:32768/todo', { useNewUrlParser: true });
+mongoose.connect('mongodb://192.168.99.101:32768/todo', { useNewUrlParser: true });
 const Task = require('./model/task');
+const User = require('./model/user');
 
 const app = express();
 
@@ -38,7 +39,7 @@ app.get('/', (req, res) => {
     res.render('home', nav);
 });
 
-app.get('*/news', (req, res) => {
+app.get('user/news', (req, res) => {
     let s1 = true;
     let s2 = false;
     if (req.cookies.source != '1') {
@@ -49,7 +50,7 @@ app.get('*/news', (req, res) => {
 });
 
 
-app.post('*/news', (req, res) => {
+app.post('/user/news', (req, res) => {
 
     res.cookie('source', req.body.source);
     res.cookie('sourceCount', req.body.sourceCount);
@@ -94,39 +95,38 @@ app.post('*/news', (req, res) => {
 
 // lesson 5 
 
-app.get('/tasks', async (req, res) => {
+app.get('/user/tasks', async (req, res) => {
     const tasks = await Task.find();
     res.render('tasks', {tasks: tasks});
 });
   
-app.get('/tasks/:id', async (req, res) => {
+app.get('/user/tasks/:id', async (req, res) => {
     const task = await Task.findById(req.params.id);
     res.send(task)
 });
 
-app.post('/tasks', async (req, res) => {
+app.post('/user/tasks', async (req, res) => {
     let task = new Task(req.body);
     task = await task.save();
     res.send(task)
 });
 
-app.put('/tasks', async (req, res) => {
+app.put('/user/tasks', async (req, res) => {
     const task = await Task.updateOne({_id: req.body.id}, {$set: {newTask: req.body.updateTask}});
     res.send(task)
 });
 
-app.delete('/tasks', async (req, res) => {
+app.delete('/user/tasks', async (req, res) => {
     const task = await Task.deleteOne({_id: req.body.id});
     res.send(task)
 });
 
+
+// lesson 6
 const session = require('cookie-session');
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 
-const app = express();
-
-app.use(cookie());
 app.use(session({ keys: ['secret'] }));
 app.use(express.json());
 
@@ -135,7 +135,7 @@ app.use(passport.session());
 
 passport.use(new Strategy(async (username, password, done) => {
   const user = await User.findOne({username});
-  if(user && user.checkPassword(password)) {
+  if(user && (user.password == password)) {
     delete user.password;
     return done(null, user);
   } else {
@@ -152,16 +152,32 @@ passport.deserializeUser(async (id, done) => {
   done(null, user);
 });
 
+app.get('/reg', (req, res) => {
+  res.render('reg')
+});
+
+app.post('/reg', async (req, res) => {
+  let user = new User(req.body);
+  user = await user.save();
+  if(user._id) {
+    res.send('new user was created')
+  }
+  else {
+    res.send('error, try again')
+  }
+});
+
 app.get('/auth', (req, res) => {
-  res.send('TODO: Auth form');
+  res.render('auth')
 });
 
 const authHandler = passport.authenticate('local', {
-  successRedirect: '/user',
   failureRedirect: '/auth',
 });
 
-app.post('/auth', authHandler);
+app.post('/auth', authHandler, (req, res) => {
+  res.send("вы вошли как " + req.body.username)
+});
 
 const mustBeAuthenticated = (req, res, next) => {
   if(req.user) {
@@ -172,14 +188,6 @@ const mustBeAuthenticated = (req, res, next) => {
 }
 
 app.all('/user*', mustBeAuthenticated);
-
-app.get('/user', (req, res) => {
-  res.send('TODO: User profile');
-});
-
-app.get('/user/settings', (req, res) => {
-  res.send('TODO: User settings');
-});
 
 app.get('/logout', (req, res) => {
   req.logout();

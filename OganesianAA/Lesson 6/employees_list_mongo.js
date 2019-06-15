@@ -116,6 +116,9 @@ class EmployeesList {
                     res.redirect(`/employeeupd/${JSON.stringify(req.body.update)}`);
                 } else if (req.body.login){
                     res.redirect(`/login/${JSON.stringify(req.body.login)}`);
+                } else if (req.body.logout){
+                    req.logout();
+                    res.redirect('/login');
                 }
             }
         });

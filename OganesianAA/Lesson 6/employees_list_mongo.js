@@ -1,15 +1,19 @@
 const path = require('path');
 const express = require('express');
-const app = express();//инициализация приложения
+const app = express();
+
 const consolidate = require('consolidate');
 const chromeLauncher = require('chrome-launcher');
+
 const mongo = require('./mongoConnect');
 const mongoDB = new mongo();
+
 const Employee = require('./mongoModelEmployees');
 const User = require('./mongoModelUsers');
+
 const cookie = require('cookie-parser');
 const session = require('cookie-session');
-const expSession = require('express-session');
+
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -141,18 +145,25 @@ class EmployeesList {
                 }
             }
         });
-        // app.put('/employees/:id', async (req, res)=>{
-        //     if (req.body) {// update an employee
-        //         const employee = await Employee.findByIdAndUpdate(req.params.id, req.body);
-        //         res.redirect('/employees');
-        //     }
-        // });
-        // app.patch('/employees/:id', async (req, res)=>{
-        //     if (req.body){// update a specific value
-        //         const employee = await Employee.findByIdAndUpdate(req.params.id, {$set: req.body});
-        //         res.redirect('/employees');
-        //     }
-        // });
+        app.put('/employees/:id', async (req, res)=>{
+            if (req.body) {// update an employee
+                const employee = await Employee.findByIdAndUpdate(req.params.id, req.body);
+                res.json(employee);
+                // res.redirect('/employees');
+            }
+        });
+        app.patch('/employees/:id', async (req, res)=>{
+            if (req.body){// update a specific value
+                const employee = await Employee.findByIdAndUpdate(req.params.id, {$set: req.body});
+                res.json(employee);
+                // res.redirect('/employees');
+            }
+        });
+        app.delete('/employees/:id', async (req, res)=>{
+                const employee = await Employee.findByIdAndRemove(req.params.id);
+                res.json(employee);
+                // res.redirect('/employees');
+        });
     }
     listen(){
         app.listen(8889, ()=>{

@@ -2,7 +2,6 @@ const express = require('express');
 const consolidate = require('consolidate');
 const bodyParser = require('body-parser');
 const path = require('path');
-const lodash = require('lodash');
 
 const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
@@ -12,6 +11,9 @@ const Strategy = require('passport-local').Strategy;
 const task = require('./models/task');
 const user = require('./models/user');
 const newslib = require('./lib/newslib');
+const serverConfing = require('./config/server');
+
+serverParams = serverConfing.getParams();
 
 const app = express();
 
@@ -45,7 +47,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  const authuser = user.getByID(id);
+  const authuser = await user.getByID(id);
   done(null, authuser);
 });
 
@@ -73,7 +75,7 @@ const mustBeAuthenticated = (req, res, next) => {
 app.all('/user*', mustBeAuthenticated);
 
 app.get('/user', (req, res) => {
-  res.send('TODO: User profile: letter ');
+  res.send(`User profile: ${req.user.username} `);
 });
 
 app.get('/user/settings', (req, res) => {
@@ -99,10 +101,10 @@ app.post('/register', async (req, res) => {
 
 app.get('/users', async (req, res) => {
 
-  res.render('users', {
-      title: 'Список пользователей',
-      users: await user.getAll(),
-  });
+    res.render('users', {
+        title: 'Список пользователей',
+        users: await user.getAll(),
+    });
 });
 
 const list = [
@@ -160,15 +162,8 @@ app.get('/remove/:id', async (req, res) => {
     res.redirect('/');
 });
 
-let text;// = [{site: list[0].name}];
+let text = [{site: list[0].name}];
 let cookie;
-
-app.post('/', function(req, res) {
-    text = req.body;
-    res.redirect("/news");
-    return text;
-});
-
 
 app.use(function (req, res, next) {
     cookie = req.cookies;
@@ -176,9 +171,16 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.post('/', function(req, res) {
+  text = req.body;
+  res.cookie('site', text.site, { maxAge: 10000000, httpOnly: true });
+  res.redirect("/news");
+  return text;
+});
+
 app.get('/news', async (req, res) => {
-    
-    let listItem = lodash.filter(list, { 'name': cookie.site } ).pop();
+  
+    const listItem = list.filter( l => l.name === cookie.site)[0];
  
     if( listItem ) {
         newsName = listItem.name;
@@ -194,32 +196,6 @@ app.get('/news', async (req, res) => {
      
 });
 
-app.listen(8888, () => {
-    console.log('Server has been started!');
+app.listen(serverParams.port, () => {
+    console.log(`Server has been started at port: ${serverParams.port}`);
 });
-
-/*
-async function siteParser(url, markerText) {
-
-    let news = [];
-
-    const $ = await sendRequest(url);
-    $(markerText).each(function () {
-        news.push({content: $(this).text().trim()});
-    });  
-
-    return news;
-}
-
-async function sendRequest(url) {
-    return new Promise((resolve, reject) => {
-      request(url, (err, req, body) => {
-        if(err) {
-          reject(err);
-        }
-        resolve(cheerio.load(body));
-      });
-    })
-}
-
-*/

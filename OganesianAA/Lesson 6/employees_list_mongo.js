@@ -181,9 +181,3 @@ module.exports = EmployeesList;
 
 //сделать шифрование паролей
 //сделать вход через фейсбук
-// GET | POST | PUT | PATCH | DELETE
-// GET /users - получение пользователей
-// POST /users - создание нового пользователя
-// PUT /users/:id - полное изменение пользователя (full update)
-// PATCH /users/:id - частичное изменение пользователя (partial update)
-// DELETE /users/:id - удаление пользователя

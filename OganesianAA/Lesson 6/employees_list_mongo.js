@@ -31,53 +31,6 @@ class EmployeesList {
         app.use(passport.initialize());
         app.use(passport.session());
     }
-
-    getRoute(){
-        app.get('/login', async (req, res)=>{//render login
-            res.render('loginForm', {});
-        });
-        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
-            if(req.user){
-                next();
-            } else{
-                res.redirect('/login');
-            }
-        };
-        app.get('/*', mustBeAuthenticated);//scanning all urls to grant access
-
-        app.get('/main', async (req,res)=>{//render main
-            const data = await Employee.find();
-            res.render('employeesListMongo',{data});
-        });
-        app.get('/newEmployee/', async (req,res)=>{//render new employee page
-            res.render('newEmployee',{});
-        });
-        app.get('/newEmployee/:data', async (req,res)=>{//posting new employee
-            let data = new Employee(JSON.parse(req.params.data));
-            data = await data.save();
-            res.redirect('/main');
-        });
-        app.get('/employee/:id', async (req,res)=>{//render specific employee page
-            const data = await Employee.findById(req.params.id);
-            res.render('employeeMongo',{data});
-        });
-        app.get(`/employeeupd/:data`, async(req, res)=>{//updating new employee
-            const data = JSON.parse(req.params.data);
-            const employee = await Employee.findByIdAndUpdate(data.id, data);
-            res.redirect('/main');
-        });
-        app.get(`/employeerem/:id`, async(req, res)=>{//removing an employee
-            const data = await Employee.findByIdAndRemove(req.params.id);
-            res.redirect('/main');
-        });
-        app.get('/logout', (req,res) =>{//logging out
-            req.logout();
-            res.redirect('/auth');
-        });
-        app.get('*', (req, res)=>{
-            res.status(404).render('404',{});
-        });
-    }
     passport(){
         passport.use(new LocalStrategy(async (username, password, done)=>{
             const user = await User.findOne({username});
@@ -95,7 +48,7 @@ class EmployeesList {
         });
 
         passport.deserializeUser(async (id, done)=>{
-            const user = User.findById(id);
+            const user = await User.findById(id);
             done(null, user);
         });
         const authHandler = passport.authenticate('local', {
@@ -103,35 +56,12 @@ class EmployeesList {
             failureRedirect: 'auth',
         });
     }
-    post(){
-        app.post('/', (req, res)=>{
-            if (req.body){
-                if (req.body.newEmployee){
-                    res.redirect(`/newEmployee/${JSON.stringify(req.body.newEmployee)}`);
-                } else if (req.body.remove){
-                    res.redirect(`/employeerem/${req.body.remove.id}`);
-                } else if (req.body.goupdate){
-                    res.redirect(`/employee/${req.body.goupdate.id}`);
-                } else if (req.body.update){
-                    res.redirect(`/employeeupd/${JSON.stringify(req.body.update)}`);
-                } else if (req.body.login){
-                    res.redirect(`/login/${JSON.stringify(req.body.login)}`);
-                } else if (req.body.logout){
-                    req.logout();
-                    res.redirect('/login');
-                }
-            }
-        });
-    }
     login(){
         const loginHandler =(req, res, next)=>{
-            passport.authenticate('local',
-                {
-                    successRedirect: '/main',
+            passport.authenticate('local',{
+                    successRedirect: '/employees',
                     failureRedirect: '/login',
-                }
-                ,
-                (err, user, info, next)=>{
+                },(err, user, info, next)=>{
                     if (err) {
                         return next(err);
                     }
@@ -142,12 +72,87 @@ class EmployeesList {
                         if (err) {
                             return next(err);
                         } else{
-                            return res.redirect('/main');
+                            return res.redirect('/employees');
                         }
                     });
                 })(req, res, next);
         };
         app.post('/login', loginHandler);
+    }
+    getRoute(){
+        app.get('/login', async (req, res)=>{//render login
+            res.render('loginForm', {});
+        });
+        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
+            if(req.user){
+                next();
+            } else{
+                res.redirect('/login');
+            }
+        };
+        app.get('/*', mustBeAuthenticated);//scanning all urls to grant access
+
+        app.get('/employees', async (req,res)=>{//render employees
+            const data = await Employee.find();
+            res.render('employeesListMongo',{data});
+        });
+        app.get('/employees/new', async (req,res)=>{//render new employee page
+            res.render('newEmployee',{});
+        });
+        app.get('/logout', (req,res) =>{//logging out
+            req.logout();
+            res.redirect('/auth');
+        });
+        app.get('*', (req, res)=>{
+            res.status(404).render('404',{});
+        });
+    }
+    post(){
+        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
+            if(req.user){
+                next();
+            } else{
+                res.redirect('/login');
+            }
+        };
+        app.post('/employees*', mustBeAuthenticated);//scanning all urls to grant access
+        app.post('/employees*', async (req, res)=>{
+            if (req.body){
+                if (req.body.remove){// remove an employee
+                    const data = req.body.remove;
+                    const employee = await Employee.findByIdAndRemove(data.id);
+                    res.redirect('/employees');
+                } else if (req.body.goupdate){// open employee
+                    const data = await Employee.findById(req.body.goupdate.id);
+                    res.render('employeeMongo',{data});
+                } else if (req.body.update){// update an employee
+                    const data = req.body.update;
+                    const employee = await Employee.findByIdAndUpdate(data.id, data);
+                    res.redirect('/employees');
+                } else if (req.body.login){
+                    res.redirect(`/login/${JSON.stringify(req.body.login)}`);
+                } else if (req.body.newEmployee){//add new employee
+                    let data = new Employee(req.body.newEmployee);
+                    data = await data.save();
+                    res.redirect('/employees');
+                } else if (req.body.logout){// logout
+                    req.logout();
+                    res.redirect('/login');
+                }
+            }
+        });
+        // app.put('/employees/:id', async (req, res)=>{
+        //     if (req.body) {// update an employee
+        //         const employee = await Employee.findByIdAndUpdate(req.params.id, req.body);
+        //         res.redirect('/employees');
+        //     }
+        // });
+        // app.patch('/employees/:id', async (req, res)=>{
+        //     if (req.body){// update a specific value
+        //         const employee = await Employee.findByIdAndUpdate(req.params.id, {$set: req.body});
+        //         res.redirect('/employees');
+        //     }
+        // });
     }
     listen(){
         app.listen(8889, ()=>{
@@ -174,3 +179,11 @@ class EmployeesList {
 const newEmployeesList = new EmployeesList();
 module.exports = EmployeesList;
 
+//сделать шифрование паролей
+//сделать вход через фейсбук
+// GET | POST | PUT | PATCH | DELETE
+// GET /users - получение пользователей
+// POST /users - создание нового пользователя
+// PUT /users/:id - полное изменение пользователя (full update)
+// PATCH /users/:id - частичное изменение пользователя (partial update)
+// DELETE /users/:id - удаление пользователя

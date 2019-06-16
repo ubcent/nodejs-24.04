@@ -18,7 +18,7 @@
         <h3 class="hiThere">Hi there, after you finish with form please hit the Add button</h3>
         <a href="/main">Go to main</a>
         <div class="addForm">
-            <form action="/" method="POST" name="newEmployee">
+            <form action="/employees" method="POST" name="newEmployee">
                 <label>First name
                     <input class="firstName" type="text" name="newEmployee[firstName]" required>
                 </label>
@@ -41,7 +41,7 @@
                 <button class="addBtn">Add</button>
             </form>
         </div>
-        <form action="/" method="post" name="logout" class="logout">
+        <form action="/employees" method="post" name="logout" class="logout">
             <input type="text" class="hide" name="logout" value="logout">
             <button>Logout&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></button>
         </form>

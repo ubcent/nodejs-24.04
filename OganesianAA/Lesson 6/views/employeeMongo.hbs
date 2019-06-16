@@ -20,7 +20,7 @@
             <a href="/main">Go to main</a>
             <div class="addForm">
 
-                    <form action="/" method="POST" name="update">
+                    <form action="/employees/{{data._id}}" method="POST" name="update">
                         <label class="hide">id
                             <input class="firstName" type="text" name="update[id]" value="{{data._id}}" required>
                             <p>{{data._id}}</p>
@@ -48,7 +48,7 @@
                     </form>
 
             </div>
-            <form action="/" method="post" name="logout" class="logout">
+            <form action="/employees" method="post" name="logout" class="logout">
                 <input type="text" class="hide" name="logout" value="logout">
                 <button>Logout&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></button>
             </form>

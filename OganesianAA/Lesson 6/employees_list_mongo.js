@@ -4,6 +4,7 @@ const app = express();
 
 const consolidate = require('consolidate');
 const chromeLauncher = require('chrome-launcher');
+const url = require('url');
 
 const mongo = require('./mongoConnect');
 const mongoDB = new mongo();
@@ -23,7 +24,7 @@ class EmployeesList {
         this.start();
     }
     init(){
-        // app.use(express.json());//bodyparser обработка пост запросов
+        app.use(express.json());//bodyparser обработка пост запросов
         app.use(express.urlencoded({extended: true}));
         app.engine('hbs', consolidate.handlebars);//инициализация движка и шаблонов
         app.set('view engine', 'hbs');
@@ -83,7 +84,7 @@ class EmployeesList {
         };
         app.post('/login', loginHandler);
     }
-    getRoute(){
+    routeHandler(){
         app.get('/login', async (req, res)=>{//render login
             res.render('loginForm', {});
         });
@@ -111,15 +112,15 @@ class EmployeesList {
             res.status(404).render('404',{});
         });
     }
-    post(){
-        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
-            if(req.user){
-                next();
-            } else{
-                res.redirect('/login');
-            }
-        };
-        app.post('/employees*', mustBeAuthenticated);//scanning all urls to grant access
+    requestHandler(){
+        // const mustBeAuthenticated = (req, res, next)=>{//check for grant access
+        //     if(req.user){
+        //         next();
+        //     } else{
+        //         res.redirect('/login');
+        //     }
+        // };
+        // app.post('/employees*', mustBeAuthenticated);//scanning all urls to grant access
         app.post('/employees*', async (req, res)=>{
             if (req.body){
                 if (req.body.remove){// remove an employee
@@ -145,22 +146,23 @@ class EmployeesList {
                 }
             }
         });
-        app.put('/employees/:id', async (req, res)=>{
+        app.put('/employees', async (req, res)=>{
             if (req.body) {// update an employee
-                const employee = await Employee.findByIdAndUpdate(req.params.id, req.body);
+                const employee = await Employee.findByIdAndUpdate(req.query.id, req.body);
                 res.json(employee);
                 // res.redirect('/employees');
             }
         });
-        app.patch('/employees/:id', async (req, res)=>{
+        app.patch('/employees', async (req, res)=>{
             if (req.body){// update a specific value
-                const employee = await Employee.findByIdAndUpdate(req.params.id, {$set: req.body});
+                console.log('patchIsHere');
+                const employee = await Employee.findByIdAndUpdate(req.query.id, {$set: req.body});
                 res.json(employee);
                 // res.redirect('/employees');
             }
         });
-        app.delete('/employees/:id', async (req, res)=>{
-                const employee = await Employee.findByIdAndRemove(req.params.id);
+        app.delete('/employees', async (req, res)=>{
+                const employee = await Employee.findByIdAndRemove(req.query.id);
                 res.json(employee);
                 // res.redirect('/employees');
         });
@@ -178,10 +180,10 @@ class EmployeesList {
         });
     }
     start(){
-        this.getRoute();
         this.passport();
-        this.post();
         this.login();
+        this.routeHandler();
+        this.requestHandler();
         this.listen();
         this.chromeLanuncher();
     }

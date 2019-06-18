@@ -194,6 +194,67 @@ app.get('/logout', (req, res) => {
   res.redirect('/auth');
 });
 
+// lesson 7
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+app.use(cors());
+
+const verifyToken = (req, res, next) => {
+  if(req.headers.authorization) {
+    const [type, token] = req.headers.authorization.split(' ');
+    jwt.verify(token, 'secret', (err, decoded) => {
+      if(err) {
+        res.status(401).json({ message: 'Wrong token' });
+      }
+      req.user = decoded;
+      next();
+    });
+  } else {
+    res.status(401).json({ message: 'No token present' });
+  }
+}
+
+app.post('/api/auth', async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({username});
+  if(user && (user.password == password)) {
+    const token = jwt.sign({ login: username}, 'secret');
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: 'Wrong credentials' });
+  }
+});
+
+app.all('/api/users*', verifyToken);
+
+app.get('/api/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+app.get('/api/users/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.json(user);
+});
+
+app.post('/api/users', async (req, res) => {
+  let user = new User(req.body);
+  user = await user.save();
+  res.json(user);
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body);
+  res.json(user);
+});
+
+app.patch('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, { $set: req.body });
+  res.json(user);
+});
+
+
 app.listen(8080, () => {
   console.log('Server has been started at port 8080!');
 }); 

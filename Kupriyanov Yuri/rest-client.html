@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Получение token</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h1>Введите данные</h1>
+    <form name="auth">
+        <label>Имя</label></br>
+        <input type="text" name="username" /></br></br>
+        <label>пароль</label></br>
+        <input type="password" name="password" /></br></br>
+        <button type="submit" id="submit">Отправить</button>
+    </form>
+
+    <div id="listUsers"></div>
+    <button type="submit" id="users">Получить пользователей</button>
+
+    <script>
+        
+        let token = '';
+        let usernameText = '';
+        const apiURL = 'http://localhost:8888';
+
+        document.getElementById("users").addEventListener("click", function (e) {
+             e.preventDefault();
+
+            let users = JSON.stringify({user: usernameText});
+            console.log(users);
+            let request = new XMLHttpRequest();
+        
+             request.open("GET", `${apiURL}/users`, true);   
+             request.setRequestHeader("Content-Type", "application/json");
+             request.setRequestHeader("Authorization", "Bearer " + token);
+             request.addEventListener("load", function () {
+                 let receivedData = JSON.parse(request.response);
+                 const lsUsr = document.getElementById("listUsers");
+                 lsUsr.innerHTML = '';
+                 receivedData[0].forEach(element => {
+                    lsUsr.innerHTML += `<a href="${apiURL}/users/${element.id}">${element.username}<a></br>`;
+                 });
+                 console.log( receivedData );   
+             });
+             request.send(users);
+         });
+
+        document.getElementById("submit").addEventListener("click", function (e) {
+             e.preventDefault();
+
+            let registerForm = document.forms["auth"];
+            let passwordText = registerForm.elements["password"].value;
+            usernameText = registerForm.elements["username"].value;
+
+            let userAuth = JSON.stringify({username: usernameText, password: passwordText});
+
+            let request = new XMLHttpRequest();
+        
+             request.open("POST", `${apiURL}/auth`, true);   
+             request.setRequestHeader("Content-Type", "application/json");
+             request.addEventListener("load", function () {
+                 let receivedUser = JSON.parse(request.response);
+                 token = receivedUser.token;
+                 console.log( token );   
+             });
+             request.send(userAuth);
+         });
+
+    </script>
+</body>
+<html>

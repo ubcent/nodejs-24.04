@@ -176,6 +176,11 @@ const authHandler = passport.authenticate('local', {
 });
 
 app.post('/auth', authHandler, (req, res) => {
+  if (req.body.remember) {
+    req.session.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+  } else {
+    req.session.expires = false;
+  }
   res.send("вы вошли как " + req.body.username)
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 // mongoose.connect('mongodb://192.168.99.100:32773/stream', { useNewUrlParser: true });
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use(cors());
 
 const User = require('./models/user');
+
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 const verifyToken = (req, res, next) => {
   if(req.headers.authorization) {

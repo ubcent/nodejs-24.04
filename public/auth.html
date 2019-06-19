@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Auth</title>
+  </head>
+  <body>
+    <form>
+      <input id="username" type="text" /><br/>
+      <input id="password" type="password" /><br/>
+      <button id="send">Send</button>
+    </form>
+    <script>
+      const $send = document.querySelector('#send');
+
+      $send.addEventListener('click', (event) => {
+        fetch('/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            if(result.token) {
+              localStorage.setItem('token', token);
+              window.location = '/users.html';
+            } else {
+              /* Вывести на страницу информацию об ошибке */  
+            }
+          })
+          .catch(() => {
+            /* Вывести на страницу информацию об ошибке */
+          });
+        event.preventDefault();
+      })
+    </script>
+  </body>
+</html>

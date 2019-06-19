@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Users</title>
+  </head>
+  <body>
+    Users page!
+    <script>
+      const token = localStorage.getItem('token');
+
+      if(!token) {
+        window.location = '/auth.html';
+      }
+
+      fetch('/users', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+        .then(response => response.json())
+        .then((users) => {
+          /* Рисуем полученных юзеров на странице */
+        })
+        .catch(() => {
+          window.location = '/auth.html';
+          localStorage.setItem('token', null);
+        });
+    </script>
+  </body>
+</html>

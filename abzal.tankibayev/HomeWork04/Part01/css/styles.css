@@ -1,0 +1,153 @@
+.container{
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+}
+.contentMargin{
+    margin: 1% 5%;
+}
+/*#region - HR-MENU*/
+ul.hr {
+    margin: 0; /* Обнуляем значение отступов */
+    padding: 4px; /* Значение полей */
+   }
+ul.hr-menu li {
+    display: inline; /* Отображать как строчный элемент */
+    margin-right: 5px; /* Отступ слева */
+    /* border: 1px solid #000000; Рамка вокруг текста */
+    padding: 3px; /* Поля вокруг текста */
+   }
+a {
+    text-decoration: none; /* Отменяем подчеркивание у ссылки */
+   }
+nav {
+    text-align:left;
+    margin:auto;
+}
+/*#endregion*/
+
+/*#region - TABLE*/
+table {border: 1px solid grey;}
+th {
+    border: 1px solid grey;
+    text-align:center;
+}
+td {
+    border: 1px solid grey;
+    text-align:center;
+}
+/*#endregion*/
+
+/*#region - TEXT*/
+.headerText{
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 36px;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+    margin: 5% auto;
+}
+
+.mainTitle
+ {
+    font-family: Arial;
+    color: #445161;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 36px;
+    text-align: left;
+    padding: 1%;
+}
+.titleCenter{
+    text-align: center;
+}
+.footerCopyrights{
+    font-family: Arial;
+    color: #445162;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    line-height: 24px;
+    text-align: center;
+}
+/*#endregion*/
+
+
+/*#region - BACKGROUNDS*/
+.backGroundColorDark{
+    background-color:  rgb(68, 81, 98);
+}
+.backGroundColorLight{
+    background-color:  rgb(255, 255, 255);
+}
+.backGroundColorMedium{
+    background-color:  rgb(245, 245, 245);
+}
+/*#endregion*/
+
+/*#region - CATALOG*/
+.cart {
+margin: 0.5% 1%;
+}
+.hCenter{
+    text-align: center;}
+.vBottom{
+    display:inline-block;
+    vertical-align: bottom;
+}
+.tarifTitle{
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 30px;
+    text-align: center;
+    margin: 2%;
+    padding: 5%;
+    text-transform: uppercase;
+}
+.tarifPrice{
+    font-family: Arial;
+    color: #445162;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 30px;
+    text-align: center;
+    margin: 2%;
+    padding: 5%;
+}
+.tarifText{
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: left;
+    margin: 2%;
+    padding: 5%;
+}
+.roundedCorner{
+    border-radius: 10px;
+}
+
+.buttonBuy{
+    border-radius: 5px;
+    background-color: #ffffff;
+    margin: 0 5% 5%;
+    padding: 5%;
+    text-align: center;
+}
+.textBuy{
+    font-family: Arial;
+    color:  #445161;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 30px;
+}
+.buttonBuy > a {
+    text-decoration: none;
+    color: inherit;
+    background-color:inherit;
+}
+/*#endregion*/

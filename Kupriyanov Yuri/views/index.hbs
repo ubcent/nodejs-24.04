@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<title>{{title}}</title>
+</head>
+
+<body>
+
+    <h4>Авторизация</h4>
+    <a href="/auth">Войти</a>
+    <a href="/register">Регистрация</a>
+    <a href="/logout">Выйти</a>
+    <a href="/users">Список пользователей</a>
+
+    <h2>Задачки:</h2>
+
+    <a href="/add">Добавить новую задачу</a>
+    <hr>
+
+    <div>
+    {{#each tasks}}
+        <div>
+        <a href="/task/{{id}}">Редактировать id: {{id}}</a> или <a href="/remove/{{id}}">Удалить id: {{id}}</a><br>
+        name: {{name}}<br>
+        comment: {{comment}}<br>
+        status: {{status}}<br>
+        <hr>
+        </div>
+    {{/each}}
+    </div>
+
+    <h2>А еще по прежнему можно почитать новости:</h2>
+    <form method="post">
+        <p>Выберите сайт для парсинга новойстей:
+        <select name="site">
+            {{#each list}}
+            <option>{{name}}</option>
+            {{/each}}
+        </select>
+        </p>
+        <input type="submit" value="Отправить"></p>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TODO</title>
+</head>
+
+<body>
+    <input type="text" id="todo">
+    <button id="add">Добавить задачу</button>
+    <div class="main"></div>
+
+    <script>
+        'use strict';
+        const main = document.getElementsByClassName('main')[0];
+        const add = document.getElementById('add');
+        document.getElementById('todo').value = '';
+        render();
+        add.addEventListener('click', () => {
+            render();
+        });
+        main.addEventListener('click', (e) => {
+            if (e.target.className === 'del') {
+                const task = e.target.previousElementSibling.textContent;
+                fetch('http://127.0.0.1:8888', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                    body:
+                        JSON.stringify({
+                            task: task,
+                        }),
+                })
+                    .then((response) => response.text())
+                    .then((tasks) => {
+                        main.innerHTML = tasks;
+                    })
+            }
+        });
+        function render() {
+            if (todo) {
+                const todo = document.getElementById('todo').value;
+                fetch('http://127.0.0.1:8888', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                    body:
+                        JSON.stringify({
+                            task: todo,
+                        }),
+                })
+                    .then((response) => response.text())
+                    .then((tasks) => {
+                        main.innerHTML = tasks;
+                    })
+            } else {
+                fetch('http://127.0.0.1:8888', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                })
+                    .then((response) => response.text())
+                    .then((tasks) => {
+                        main.innerHTML = tasks;
+                    })
+            }
+
+        }
+    </script>
+</body>
+
+</html>

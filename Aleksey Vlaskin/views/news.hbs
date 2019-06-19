@@ -1,0 +1,8 @@
+<link rel="stylesheet" type="text/css" href="public/styleNews.css">
+<div class="news">
+    <h1 class="newsTitle">{{newsTitle}}</h1>
+    {{#each newsItems}}
+        <h4 class="newsDate">{{this.newsDate}}</h4>
+        <p class="newsText">{{this.newsText}}</p>
+    {{/each}}
+</div>

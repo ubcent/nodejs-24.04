@@ -1,0 +1,25 @@
+{
+  "name": "Mygit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serg1971ch/MyRepository.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serg1971ch/MyRepository/issues"
+  },
+  "homepage": "https://github.com/serg1971ch/MyRepository#readme",
+  "dependencies": {
+    "ansi": "^0.3.1",
+    "cat-me": "^1.0.3",
+    "knock-knock-jokes": "^1.7.0"
+  }
+}

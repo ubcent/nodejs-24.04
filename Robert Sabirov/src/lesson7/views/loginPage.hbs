@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Страница входа</title>
+    <link rel="stylesheet" href="/public/normalize.css">
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Страница входа</h1>
+        <p>Для получения доступа к остальным ресурсам
+            сайта требуется выполнить вход под зарегистрированным
+            пользователем.</p>
+        <p>Сайт находится на стадии разработки</p>
+        <a href="/reg">создать нового пользователя</a>
+        {{!-- <form method="post" action="/auth"> --}}
+        <label for="username">Логин:</label>
+        <input type="text" name="username" id="login">
+        <label for="password">Пароль:</label>
+        <input type="password" name="password" id="password">
+        <button type="submit">Войти</button>
+        {{!-- </form> --}}
+    </div>
+
+    <script>
+        document.addEventListener('click', event => {
+            if (event.target.type === 'submit') {
+                const login = document.querySelector('#login').value;
+                const password = document.querySelector('#password').value;
+
+                const params = {
+                    username: login,
+                    password: password
+                }
+
+                const http = new XMLHttpRequest();
+                http.open('POST', '/auth')
+                http.setRequestHeader('Content-type', 'application/json')
+                http.send(JSON.stringify(params))
+                http.onload = function () {
+                    alert(http.responseText)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

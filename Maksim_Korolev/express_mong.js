@@ -116,3 +116,5 @@ app.get('*', (req, res) => {
 app.listen(8888, () => {
     console.log('Server has been started! 8888')
 });
+
+//заглушка для ДЗ 7

@@ -7,4 +7,4 @@ const taskSchema = new Schema({
   password: { type: String },
 });
 
-module.exports = mongoose.model('task', taskSchema);
+module.exports = mongoose.model('userlist', taskSchema);

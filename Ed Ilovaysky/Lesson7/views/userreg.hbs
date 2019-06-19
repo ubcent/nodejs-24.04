@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>home work #6</title>
+    <title>home work #7</title>
 </head>
 
 <body>
-    <form action="/registration" method="POST">
+    <form action="/reg" method="POST">
         <fieldset>
             <legend>Зарегестрируйтесь пожалуйста.</legend>
-            <input type="text" required placeholder="{{login}}"> <br>
-            <input type="password" required placeholder="{{password}}"><br>
+            <input type="text" required name="login" placeholder="{{login}}"> <br>
+            <input type="password" required name="password" placeholder="{{password}}"><br>
             <button type="submit">{{value}}</button>
         </fieldset>
     </form>

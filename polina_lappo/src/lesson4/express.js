@@ -221,7 +221,6 @@ const verifyToken = (req, res, next) => {
 
 app.post('/api/auth', async (req, res) => {
   const { username, password } = req.body;
-
   const user = await User.findOne({username});
   if(user && (user.password == password)) {
     const token = jwt.sign({ login: username}, 'secret');

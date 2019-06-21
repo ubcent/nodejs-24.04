@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Задачи</title>
+    <link rel="stylesheet" href="http://localhost:13013/public/normalize.css">
+    <link rel="stylesheet" href="http://localhost:13013/public/style.css">
+
+    <script src="http://localhost:13013/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h3>Задачи</h3>
+        <label for="title">Наименование</label>
+        <input type="text" name="title" id="title">
+        <label for="desc">Описание</label>
+        <textarea name="desc" id="desc"></textarea>
+        <button id="add">Добавить</button><br>
+        <ul id="tasks">
+
+        </ul>
+    </div>
+
+    <script>
+        const socket = io.connect('http://localhost:13013/');
+
+        const $tasks = document.querySelector('#tasks');
+        const $title = document.querySelector('#title');
+        const $desc = document.querySelector('#desc');
+        const $add = document.querySelector('#add');
+
+        const addFunc = (task) => {
+            const $li = document.createElement('li');
+            $li.textContent = `${task.title}: ${task.desc}`;
+
+            $tasks.appendChild($li);
+        }
+
+        socket.on('task', addFunc);
+
+        $add.addEventListener('click', (event) => {
+            socket.emit('task', {
+                title: $title.value,
+                desc: $desc.value,
+            })
+        })
+
+
+        fetch('http://localhost:13013/todos')
+            .then(respons => respons.json())
+            .then(result => {
+                result.forEach(task => {
+                    addFunc(task)
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    </script>
+</body>
+
+</html>

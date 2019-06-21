@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="http://127.0.0.1:8888/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <a href="/tasks">See All Tasks</a>
+    <ul id="messages"></ul>
+    <h5>Create a task:</h5>
+    Task<br />
+    <input id="name" type="text" /><br /><br />
+    Task description<br />
+    <textarea id="text"></textarea> <br />
+    <br />
+    Deadline <br />
+    <input
+      id="deadline"
+      type="datetime-local"
+      name="deadline"
+      min="2019-01-01T00:00"
+      max="2025-012-30T23:59"
+    />
+    <br /><br />
+    <input id="check" type="checkbox" /> is Done? <br /><br />
+    <button id="send">Ok</button><br />
+
+    <script>
+      const socket = io.connect('http://127.0.0.1:8888');
+      const $messages = document.querySelector('#messages');
+      const $name = document.querySelector('#name');
+      const $text = document.querySelector('#text');
+      const $deadline = document.querySelector('#deadline');
+      const $isDone = document.querySelector('#check');
+      const $send = document.querySelector('#send');
+
+      socket.on('message', message => {
+        const $li = document.createElement('li');
+        $li.textContent = `The task has been created:  Task name: ${
+          message.taskName
+        } Desc: ${message.taskDesc} deadline: ${message.deadLine} is Done: ${
+          message.isTaskDone
+        }`;
+        $messages.appendChild($li);
+      });
+
+      $send.addEventListener('click', event => {
+        let isDone = ' NOT DONE yet';
+        if ($isDone.checked) {
+          isDone = ' DONE';
+        }
+        socket.emit('message', {
+          taskName: $name.value,
+          taskDesc: $text.value,
+          deadLine: $deadline.value,
+          isTaskDone: isDone,
+        });
+      });
+    </script>
+  </body>
+</html>

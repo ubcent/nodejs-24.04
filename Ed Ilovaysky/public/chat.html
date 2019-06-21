@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="http://localhost:8888/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <input id="name" type="text" /><br/>
+  <input id="socketId" type="text" /><br/>
+  <textarea id="text"></textarea><br/>
+  <button id="send">Send</button><br/>
+
+  <input id="roomName" placeholder="room name" /><br/>
+  <button id="join">Join</button>
+  <script>
+    const socket = io.connect('http://localhost:8888');
+    const $send = document.querySelector('#send');
+    const $messages = document.querySelector('#messages');
+    const $text = document.querySelector('#text');
+    const $name = document.querySelector('#name');
+    const $socketId = document.querySelector('#socketId');
+    const $roomName = document.querySelector('#roomName');
+    const $join = document.querySelector('#join');
+
+    socket.on('message', (message) => {
+      const $li = document.createElement('li');
+      $li.textContent = `${message.name}(${message.socketId}): ${message.text}`;
+
+      $messages.appendChild($li);
+    });
+
+    $send.addEventListener('click', (event) => {
+      socket.emit('message', {
+        text: $text.value,
+        name: $name.value,
+        to: $socketId.value,
+      });
+    });
+
+    $join.addEventListener('click', (event) => {
+      socket.emit('join', $roomName.value);
+    });
+  </script>
+</body>
+</html>

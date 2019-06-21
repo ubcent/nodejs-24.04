@@ -1,20 +1,15 @@
 const path = require('path');
 
 const express = require('express');
-const consolidate = require('consolidate');
 const bodyParser = require('body-parser');
 
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:32770/users', { useNewUrlParser: true });
+mongoose.connect('mongodb://127.0.0.1:32771/users', { useNewUrlParser: true });
 
 const app = express();
-
-app.engine('hbs', consolidate.handlebars);
-app.set('view engine', 'hbs');
-app.set('views', path.resolve(__dirname, 'views'));
 
 app.use(express.json());
 app.use(
@@ -24,6 +19,7 @@ app.use(
 );
 
 app.use(cors());
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 const User = require('./models/mongo');
 const secret = 'J{Nkja0kvn[348jas0u9ulkkk0fjl0';
@@ -43,46 +39,34 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-app.post('/', async (req, res) => {
+app.post('/auth', async (req, res) => {
   const { login, password } = req.body;
+  // console.log(req.body);
   const user = await User.findOne({ login });
   if (login === user.login && password === user.password) {
     const token = jwt.sign({ id: user.id }, secret, {
       expiresIn: 180,
     });
+    //console.log(token);
     res.set({
-      'Content-type': 'aplication/json',
-      Authorization: `Bearer ${token}`,
+      'Content-type': 'application/json',
+      authorization: `Bearer ${token}`,
     });
-    res.send(`Hello, 
-        <i>${user.login}</i>
-        <hr>
-       <i>please:</i>  <br>
-        <a href="/users">TEST USERS PAGES</a>`);
+    res.json({ token });
   } else {
     res.status(401).json({ message: 'Wrong credentials' });
   }
 });
-app.get('/', (req, res) => {
-  res.render('user', {
-    login: 'Введите Ваш логин',
-    password: 'Введите Ваш пароль',
-    value: 'Отправить',
-  });
-});
+/* app.get('/auth', (req, res) => {
+  res.send();
+}); */
 app.post('/reg', async (req, res) => {
   let user = new User(req.body);
   user = await user.save();
 
   res.send('Hello, ' + user.login);
 });
-app.get('/reg', (req, res) => {
-  res.render('userreg', {
-    login: 'Введите Ваш логин',
-    password: 'Введите Ваш пароль',
-    value: 'Отправить',
-  });
-});
+app.get('/reg', (req, res) => {});
 
 app.all('/users*', verifyToken);
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>home work #7</title>
+  </head>
+
+  <body>
+    <form action="/reg" method="POST">
+      <fieldset>
+        <legend>Зарегестрируйтесь пожалуйста.</legend>
+        <input
+          type="text"
+          required
+          id="login"
+          name="login"
+          placeholder="login"
+        />
+        <br />
+        <input
+          type="password"
+          required
+          name="password"
+          id="password"
+          placeholder="password"
+        /><br />
+        <button id="send">send</button>
+      </fieldset>
+    </form>
+    <script>
+      const $send = document.querySelector('#send');
+
+      $send.addEventListener('click', event => {
+        fetch('/auth', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+          .then(respons => respons.json())
+          .then(result => {
+            if (result.token) {
+              localStorage.setItem('token', token);
+              window.location = '/users.html';
+            } else {
+              alert('server error to send token');
+            }
+          })
+          .catch(err => {
+            alert('wrong login or password been used!');
+            window.location = '/auth.html';
+            localStorage.setItem('token', null);
+          });
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

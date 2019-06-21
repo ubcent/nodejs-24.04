@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>home work #7</title>
+  </head>
+
+  <body>
+    Secret info. For USERS only!
+    <script>
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location = 'http://localhost:8888/auth.html';
+      }
+      fetch('http://localhost:8888/users', {
+        headers: {
+          'Content-type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+      })
+        .then(respons => respons.json())
+        .then(users => {
+          /* put list of users */
+        })
+        .catch(err => {
+          localStorage.setItem('token', null);
+          window.location = 'http://localhost:8888/auth.html';
+        });
+    </script>
+  </body>
+</html>

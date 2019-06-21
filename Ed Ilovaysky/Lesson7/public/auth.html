@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>home work #7</title>
+  </head>
+
+  <body>
+    <!-- <form action="/auth" method="POST"> -->
+    <fieldset>
+      <legend>Авторизуйтесь пожалуйста.</legend>
+      <input
+        type="text"
+        required
+        name="login"
+        id="login"
+        placeholder="login"
+        value=""
+      />
+      <br />
+      <input
+        type="password"
+        required
+        name="password"
+        id="password"
+        placeholder="password"
+        value=""
+      /><br />
+      <button id="send" type="submit">enter</button>
+    </fieldset>
+    <!-- </form> -->
+    <a href="/users.html">TEST USERS PAGES</a>
+
+    <script>
+      const $send = document.querySelector('#send');
+
+      $send.addEventListener('click', event => {
+        const login = document.querySelector('#login').value;
+        const password = document.querySelector('#password').value;
+
+        console.log(`login: ${login}, password: ${password}`);
+
+        fetch('http://localhost:8888/auth', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ login, password }),
+        })
+          .then(respons => respons.json())
+          .then(result => {
+            console.log(result);
+            if (result.token) {
+              localStorage.setItem('token', result.token);
+              alert(`token: ${result.token}`);
+              window.location = 'http://localhost:8888/users.html';
+            } else {
+              alert('server error to send token');
+            }
+          })
+          .catch(err => {
+            alert('wrong login or password been used!');
+            // window.location = '/auth';
+            localStorage.setItem('token', null);
+          });
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

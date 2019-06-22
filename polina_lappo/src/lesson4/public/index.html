@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Auth</title>
+</head>
+
+<body>
+    <h2>Авторизация</h2>
+    <div>
+        <input type="text" name="username" id="username" placeholder='юзернейм'><br>
+        <input type='password' name='password' id='password' placeholder='пароль'><br>
+        <input type='submit' value='Войти' id='btn'>
+    </div>
+    <div id='status'></div>
+    <script>
+        const btn = document.getElementById('btn');
+        const div = document.getElementById('status');
+        btn.addEventListener('click', () => {
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+            };
+            fetch('/api/auth', {
+                    method: 'post',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    
+                    div.innerHTML = data
+
+                    if (data.token) {
+                        localStorage.setItem('token', token);
+                        window.location = '/tasks.html';
+                        div.innerHTML = "вы авторизованы"
+                    } else {
+                        div.innerHTML = "ошибка"
+                    }
+                })
+                .catch(() => {
+                    div.innerHTML = "ошибка"
+                });
+            event.preventDefault();
+        })
+    </script>
+</body>
+
+</html>

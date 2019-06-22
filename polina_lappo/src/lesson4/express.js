@@ -28,6 +28,8 @@ handlebars.registerHelper('list', function(context, options) {
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'view'));
 
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 const nav = {
     link1:'News'
 };
@@ -230,7 +232,7 @@ app.post('/api/auth', async (req, res) => {
   }
 });
 
-app.all('/api/users*', verifyToken);
+app.all('/api/*', verifyToken);
 
 app.get('/api/users', async (req, res) => {
   const users = await User.find();
@@ -257,6 +259,33 @@ app.patch('/api/users/:id', async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, { $set: req.body });
   res.json(user);
 });
+
+app.get('/api/tasks', async (req, res) => {
+  const tasks = await Task.find();
+  res.json(tasks);
+});
+
+app.get('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findById(req.params.id);
+  res.json(tasks);
+});
+
+app.post('/api/tasks', async (req, res) => {
+  let tasks = new Task(req.body);
+  tasks = await tasks.save();
+  res.json(tasks);
+});
+
+app.put('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findByIdAndUpdate(req.params.id, req.body);
+  res.json(tasks);
+});
+
+app.patch('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findByIdAndUpdate(req.params.id, { $set: req.body });
+  res.json(tasks);
+});
+
 
 
 app.listen(8080, () => {

@@ -21,6 +21,12 @@ class EmployeesList {
         this.init();
         this.start();
         this.secret = 'secret';
+        this.openLinks = [
+            'http://localhost:8889/login',
+            'http://localhost:8889/employees',
+            'http://localhost:8889/employee',
+            'http://localhost:8889/404',
+        ]
     }
     init(){
         app.use(express.json());
@@ -53,37 +59,55 @@ class EmployeesList {
                     failureRedirect: '/login',
                 },(err, user, info, next)=>{
                     if (err) {
-                        // res.status(401).json({message: 'Wrong credentials'});
-                        return res.redirect('/login');
+                        return  res.status(401).json({message: 'Wrong credentials'});
                     } else if(!user) {
-                        // res.status(401).json({message: 'Wrong credentials'});
-                        return res.redirect('/login');
+                        return res.status(401).json({message: 'Wrong credentials'});
                     } else{
                         const token = jwt.sign({_id: user._id, name: user.username},
                             `${this.secret}`); //добавить SSH ключ, время жизни токена
-                        res.setHeader('Authorization', `Bearer ${token}`);
-                        res.json({Bearer: token});
+                        res.json({token: `Bearer ${token}`});
                     }
             })(req, res, next);
 
         };
         app.post('/login', loginHandler);
     }
+    checkAuthentication(){
+        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
+            console.log(req.headers);
+            if (!this.openLinks.includes(req.headers.referer)){
+                if(req.headers.authentication){
+                    const [type, token] = req.headers.authentication.split(' ');
+                    jwt.verify(token, this.secret, async (err, decoded)=>{
+                        if(err){
+                            console.log('Wrong token');
+                            res.status(401).json({message: 'Wrong token'});
+                        } else{
+                            console.log(decoded);
+                            const user = await User.findOne({_id: decoded._id});
+                            console.log(user);
+                            if (decoded._id == user._id){
+                                console.log('good');
+                                req.user = decoded;
+                                next();
+                            }
+                        }
+                    });
+                } else{
+                    console.log('No token passed');
+                    res.status(401).json({message: 'No token passed'});
+                }
+            } else
+                next();
+
+        };
+        app.all(mustBeAuthenticated);//scanning all urls to grant access
+    }
     routeHandler(){
         app.get('/login', async (req, res)=>{//render login
             res.sendFile('loginForm.html', {root: path.resolve(__dirname, './public')});
         });
-        const mustBeAuthenticated = (req, res, next)=>{//check for grant access
-            // console.log(req.headers);
-            next();
-            // if(req.headers.Authorization){
-            //
-            //     next();
-            // } else{
-            //     res.redirect('/login');
-            // }
-        };
-        app.get('/*', mustBeAuthenticated);//scanning all urls to grant access
+
 
         app.get('/employees', async (req,res)=>{//send main page
             res.sendFile('employeesList.html', {root: path.resolve(__dirname, './public')});
@@ -104,7 +128,6 @@ class EmployeesList {
         });
     }
     requestHandler(){
-
         app.post('/logout', (req, res)=>{
             req.logout();
             res.redirect('/login');
@@ -148,6 +171,7 @@ class EmployeesList {
     start(){
         this.passport();
         this.login();
+        this.checkAuthentication();
         this.routeHandler();
         this.requestHandler();
         this.listen();
@@ -157,3 +181,5 @@ class EmployeesList {
 
 const newEmployeesList = new EmployeesList();
 module.exports = EmployeesList;
+
+// защита страниц, проверка токена на всех этапах

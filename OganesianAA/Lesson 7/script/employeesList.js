@@ -17,7 +17,6 @@ class employeesList{
                         if (res._id){
                             window.location.href = "/employees";
                         }
-                        console.log(res);
                     })
                     .catch(err => console.log(err))
             });
@@ -25,7 +24,6 @@ class employeesList{
         [...$employee].map(item=>{
             item.addEventListener('click', (e)=> {
                 e.preventDefault();
-                console.log(1);
                 localStorage.setItem('employeeId', e.currentTarget.dataset.id);
                 if(localStorage.token){
                     window.location.href = "/employee";
@@ -65,7 +63,10 @@ class employeesList{
         this.init();
     }
     sendData(route, method, data){
-        console.log(route, method, data);
+        let token = undefined;
+        if (localStorage.getItem('token')){
+            token = localStorage.getItem('token');
+        }
         return(
             fetch(route, {
                 method: method,
@@ -74,6 +75,7 @@ class employeesList{
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authentication': `${token}`,
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: JSON.stringify(data), // body data type must match "Content-Type" header

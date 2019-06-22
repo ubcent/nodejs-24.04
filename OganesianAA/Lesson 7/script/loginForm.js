@@ -26,14 +26,17 @@ class loginForm{
         })
             .then(response =>response.json())
             .then(res =>{
-                localStorage.setItem('token', res.Bearer);
-                if(localStorage.token){
+                console.log(res);
+                console.log(res.token);
+                if (res.token){
+                    localStorage.setItem('token', res.token);
                     window.location.href = "/employees";
+                } else{
+                    console.log(res);
                 }
             })
             .catch(err => console.log(err))
     }
-
 }
 
 let newLoginForm = new loginForm();

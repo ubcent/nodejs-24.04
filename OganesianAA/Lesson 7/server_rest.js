@@ -180,6 +180,7 @@ class EmployeesList {
 }
 
 const newEmployeesList = new EmployeesList();
+
 module.exports = EmployeesList;
 
 // защита страниц, проверка токена на всех этапах

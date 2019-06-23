@@ -26,8 +26,6 @@ class loginForm{
         })
             .then(response =>response.json())
             .then(res =>{
-                console.log(res);
-                console.log(res.token);
                 if (res.token){
                     localStorage.setItem('token', res.token);
                     window.location.href = "/employees";

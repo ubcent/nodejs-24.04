@@ -74,27 +74,21 @@ class EmployeesList {
     }
     checkAuthentication(){
         const mustBeAuthenticated = (req, res, next)=>{//check for grant access
-            console.log(req.headers);
             if (!this.openLinks.includes(req.headers.referer)){
                 if(req.headers.authentication){
                     const [type, token] = req.headers.authentication.split(' ');
                     jwt.verify(token, this.secret, async (err, decoded)=>{
                         if(err){
-                            console.log('Wrong token');
                             res.status(401).json({message: 'Wrong token'});
                         } else{
-                            console.log(decoded);
                             const user = await User.findOne({_id: decoded._id});
-                            console.log(user);
                             if (decoded._id == user._id){
-                                console.log('good');
                                 req.user = decoded;
                                 next();
                             }
                         }
                     });
                 } else{
-                    console.log('No token passed');
                     res.status(401).json({message: 'No token passed'});
                 }
             } else
@@ -180,7 +174,6 @@ class EmployeesList {
 }
 
 const newEmployeesList = new EmployeesList();
-
 module.exports = EmployeesList;
 
 // защита страниц, проверка токена на всех этапах

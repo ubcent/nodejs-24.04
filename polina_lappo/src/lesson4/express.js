@@ -5,8 +5,10 @@ const consolidate = require('consolidate');
 const handlebars = require('handlebars');
 
 var cookieParser = require('cookie-parser');
-
-const Tasks = require('./model/tasks');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://192.168.99.101:32768/todo', { useNewUrlParser: true });
+const Task = require('./model/task');
+const User = require('./model/user');
 
 const app = express();
 
@@ -26,6 +28,8 @@ handlebars.registerHelper('list', function(context, options) {
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'view'));
 
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 const nav = {
     link1:'News'
 };
@@ -37,7 +41,7 @@ app.get('/', (req, res) => {
     res.render('home', nav);
 });
 
-app.get('*/news', (req, res) => {
+app.get('user/news', (req, res) => {
     let s1 = true;
     let s2 = false;
     if (req.cookies.source != '1') {
@@ -48,7 +52,7 @@ app.get('*/news', (req, res) => {
 });
 
 
-app.post('*/news', (req, res) => {
+app.post('/user/news', (req, res) => {
 
     res.cookie('source', req.body.source);
     res.cookie('sourceCount', req.body.sourceCount);
@@ -93,32 +97,218 @@ app.post('*/news', (req, res) => {
 
 // lesson 5 
 
-app.get('/tasks', async (req, res) => {
-    const tasks = await Tasks.readAll();
-    console.log(tasks);
+app.get('/user/tasks', async (req, res) => {
+    const tasks = await Task.find();
     res.render('tasks', {tasks: tasks});
 });
   
-app.get('/tasks/:id', async (req, res) => {
-    const task = await Tasks.read(req.params.id);
+app.get('/user/tasks/:id', async (req, res) => {
+    const task = await Task.findById(req.params.id);
     res.send(task)
 });
 
-app.post('/tasks', async (req, res) => {
-    const task = await Tasks.create(req.body);
+app.post('/user/tasks', async (req, res) => {
+    let task = new Task(req.body);
+    task = await task.save();
     res.send(task)
 });
 
-app.put('/tasks', async (req, res) => {
-    const task = await Tasks.update(req.body.id, req.body.updateTask);
+app.put('/user/tasks', async (req, res) => {
+    const task = await Task.updateOne({_id: req.body.id}, {$set: {newTask: req.body.updateTask}});
     res.send(task)
 });
 
-app.delete('/tasks', async (req, res) => {
-    const task = await Tasks.delete(req.body.id);
+app.delete('/user/tasks', async (req, res) => {
+    const task = await Task.deleteOne({_id: req.body.id});
     res.send(task)
 });
 
-app.listen(8080, () => {
+
+// lesson 6
+const session = require('cookie-session');
+const passport = require('passport');
+const Strategy = require('passport-local').Strategy;
+
+app.use(session({ keys: ['secret'] }));
+app.use(express.json());
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new Strategy(async (username, password, done) => {
+  const user = await User.findOne({username});
+  if(user && (user.password == password)) {
+    delete user.password;
+    return done(null, user);
+  } else {
+    return done(null, false);
+  }
+}));
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = User.findById(id);
+  done(null, user);
+});
+
+app.get('/reg', (req, res) => {
+  res.render('reg')
+});
+
+app.post('/reg', async (req, res) => {
+  let user = new User(req.body);
+  user = await user.save();
+  if(user._id) {
+    res.send('new user was created')
+  }
+  else {
+    res.send('error, try again')
+  }
+});
+
+app.get('/auth', (req, res) => {
+  res.render('auth')
+});
+
+const authHandler = passport.authenticate('local', {
+  failureRedirect: '/auth',
+});
+
+app.post('/auth', authHandler, (req, res) => {
+  if (req.body.remember) {
+    req.session.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+  } else {
+    req.session.expires = false;
+  }
+  res.send("вы вошли как " + req.body.username)
+});
+
+const mustBeAuthenticated = (req, res, next) => {
+  if(req.user) {
+    next();
+  } else {
+    res.redirect('/auth');
+  }
+}
+
+app.all('/user*', mustBeAuthenticated);
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/auth');
+});
+
+// lesson 7
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+app.use(cors());
+
+const verifyToken = (req, res, next) => {
+  if(req.headers.authorization) {
+    const [type, token] = req.headers.authorization.split(' ');
+    jwt.verify(token, 'secret', (err, decoded) => {
+      if(err) {
+        res.status(401).json({ message: 'Wrong token' });
+      }
+      req.user = decoded;
+      next();
+    });
+  } else {
+    res.status(401).json({ message: 'No token present' });
+  }
+}
+
+app.post('/api/auth', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({username});
+  if(user && (user.password == password)) {
+    const token = jwt.sign({ login: username}, 'secret');
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: 'Wrong credentials' });
+  }
+});
+
+app.all('/api/*', verifyToken);
+
+app.get('/api/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+app.get('/api/users/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.json(user);
+});
+
+app.post('/api/users', async (req, res) => {
+  let user = new User(req.body);
+  user = await user.save();
+  res.json(user);
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body);
+  res.json(user);
+});
+
+app.patch('/api/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, { $set: req.body });
+  res.json(user);
+});
+
+app.get('/api/tasks', async (req, res) => {
+  const tasks = await Task.find();
+  res.json(tasks);
+});
+
+app.get('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findById(req.params.id);
+  res.json(tasks);
+});
+
+app.post('/api/tasks', async (req, res) => {
+  let tasks = new Task(req.body);
+  tasks = await tasks.save();
+  res.json(tasks);
+});
+
+app.put('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findByIdAndUpdate(req.params.id, req.body);
+  res.json(tasks);
+});
+
+app.patch('/api/tasks/:id', async (req, res) => {
+  const tasks = await Task.findByIdAndUpdate(req.params.id, { $set: req.body });
+  res.json(tasks);
+});
+
+
+// lesson 8 
+const socketIO = require('socket.io');
+const http = require('http');
+const server = http.Server(app);
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('Connection has been established!!!');
+
+  socket.on('history', (message) => {
+    message.timestamp = new Date();
+    socket.broadcast.emit('history', message);
+
+    socket.emit('history', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Connection has been ended!');
+  });
+});
+
+
+server.listen(8080, () => {
   console.log('Server has been started at port 8080!');
 }); 

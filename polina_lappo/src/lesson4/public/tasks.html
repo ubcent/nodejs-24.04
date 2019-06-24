@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>tasks</title>
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <style>
+        #history {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: 1px dashed green;
+        }
+    </style>
+</head>
+
+<body>
+        <ul id="history"></ul>
+        <h2>Список задач</h2>
+        <ul id="list"></ul>
+        <h2>Добавить задачу</h2>
+        <div>
+            <label>Новая задача  <input type='text' name='newTask' id='new-task' required ></label><br>
+            <input type='submit' value='Добавить' id='btn-add'> 
+        </div>
+        <div id='add-status'></div>
+        <h2>Обновить задачу</h2>
+        <div>
+            <label>Id  <input type='text' name='id' id='id' required ></label><br>
+            <label>Заменить на   <input type='text' name='updateTask' id='update-task' required ></label><br>
+            <input type='submit' value='Обновить' id='btn-upd'>
+        </div>
+        <div id='upd-status'></div>
+        <h2>Удалить задачу</h2>
+        <div>
+            <label>Id  <input type='text' name='id-del' id='id-del' required ></label><br>
+            <input type='submit' value='Удалить' id='btn-del'>
+        </div>
+        <div id='del-status'></div>
+        <script>
+
+            const socket = io.connect('http://localhost:8080');
+            const history = document.getElementById('history');
+            socket.on('history', (message) => {
+                const li = document.createElement('li');
+                li.textContent = `задача ${message.message} в ${message.timestamp}`;
+                history.appendChild(li);
+            });
+
+            window.onload = (() => {
+                getListOfTask();
+            })
+        
+            const addbtn = document.getElementById('btn-add');
+            addbtn.addEventListener('click', () => {
+                const data = {
+                    newTask: document.getElementById('new-task').value,
+                };
+                fetch('/api/tasks', {
+                    method: 'post',
+                    headers: {
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },  
+                    body: JSON.stringify(data)
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    const div = document.getElementById('add-status');
+                    div.innerHTML = 'Добавлено';
+                    socket.emit('history', {
+                        message: 'добавлена',
+                    });
+                })
+            })
+        
+            const updbtn = document.getElementById('btn-upd');
+            updbtn.addEventListener('click', () => {
+                const data = {
+                    id: document.getElementById('id').value,
+                    updateTask: document.getElementById('update-task').value,
+                };
+                fetch('/api/tasks', {  
+                    method: 'put',  
+                    headers: {
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,  
+                    },  
+                    body: JSON.stringify(data)
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    const div = document.getElementById('upd-status');
+                    div.innerHTML = 'Обновлено';
+                    socket.emit('history', {
+                        message: 'обновлена',
+                    });
+                })
+            })
+        
+            const delbtn = document.getElementById('btn-del');
+            delbtn.addEventListener('click', () => {
+                const data = {
+                    id: document.getElementById('id-del').value,
+                };
+                fetch('/api/tasks', {  
+                    method: 'delete',  
+                    headers: {
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },  
+                    body: JSON.stringify(data)
+                })
+                .then((response) => response.text())
+                .then((data) => {
+                    console.log(data);
+                    const div = document.getElementById('del-status');
+                    div.innerHTML = 'Удалено';
+                    socket.emit('history', {
+                        message: 'удалена',
+                    });
+                })
+            })
+
+            function getListOfTask() {
+                fetch('/api/tasks', {
+                    method: 'get',
+                    headers: {
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    const div = document.getElementById('list');
+                    for (let i = 0; i < data.length; i++){
+                        const li = document.createElement('li');
+                        li.textContent = `id: ${data[i]._id} task: ${data[i].newTask}`;
+                        div.appendChild(li);
+                    }
+                })
+            }
+        </script>
+</body>
+
+</html>

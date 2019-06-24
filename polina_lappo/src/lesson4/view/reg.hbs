@@ -1,0 +1,29 @@
+<h2>Регистрация</h2>
+<div>
+    <input type="text" name="username" id="username"><br>
+    <input type='password' name='password' id='password'><br>
+    <input type='submit' value='Зарегистроваться' id='btn'>
+</div>
+<div id="status"></div>
+<div><a href="/auth">Уже есть аккаунт?</a></div>
+<script>
+    const btn = document.getElementById('btn');
+    btn.addEventListener('click', () => {
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+        fetch('/reg', {  
+            method: 'post',  
+            headers: {
+                "Content-type": "application/json"  
+            },  
+            body: JSON.stringify(data)
+        }).
+        then((response) => response.text())
+        .then((data) => {
+            const div = document.getElementById('status');
+            div.innerHTML = data
+        })
+    })
+</script>

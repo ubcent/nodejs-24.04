@@ -287,7 +287,28 @@ app.patch('/api/tasks/:id', async (req, res) => {
 });
 
 
+// lesson 8 
+const socketIO = require('socket.io');
+const http = require('http');
+const server = http.Server(app);
+const io = socketIO(server);
 
-app.listen(8080, () => {
+io.on('connection', (socket) => {
+  console.log('Connection has been established!!!');
+
+  socket.on('history', (message) => {
+    message.timestamp = new Date();
+    socket.broadcast.emit('history', message);
+
+    socket.emit('history', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Connection has been ended!');
+  });
+});
+
+
+server.listen(8080, () => {
   console.log('Server has been started at port 8080!');
 }); 

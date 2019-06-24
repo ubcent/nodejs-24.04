@@ -3,9 +3,19 @@
 
 <head>
     <title>tasks</title>
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <style>
+        #history {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: 1px dashed green;
+        }
+    </style>
 </head>
 
 <body>
+        <ul id="history"></ul>
         <h2>Список задач</h2>
         <ul id="list"></ul>
         <h2>Добавить задачу</h2>
@@ -29,6 +39,14 @@
         <div id='del-status'></div>
         <script>
 
+            const socket = io.connect('http://localhost:8080');
+            const history = document.getElementById('history');
+            socket.on('history', (message) => {
+                const li = document.createElement('li');
+                li.textContent = `задача ${message.message} в ${message.timestamp}`;
+                history.appendChild(li);
+            });
+
             window.onload = (() => {
                 getListOfTask();
             })
@@ -49,7 +67,10 @@
                 .then((response) => response.json())
                 .then((data) => {
                     const div = document.getElementById('add-status');
-                    div.innerHTML = 'Добавлено'
+                    div.innerHTML = 'Добавлено';
+                    socket.emit('history', {
+                        message: 'добавлена',
+                    });
                 })
             })
         
@@ -70,7 +91,10 @@
                 .then((response) => response.json())
                 .then((data) => {
                     const div = document.getElementById('upd-status');
-                    div.innerHTML = 'Обновлено'
+                    div.innerHTML = 'Обновлено';
+                    socket.emit('history', {
+                        message: 'обновлена',
+                    });
                 })
             })
         
@@ -87,10 +111,14 @@
                     },  
                     body: JSON.stringify(data)
                 })
-                .then((response) => response.json())
+                .then((response) => response.text())
                 .then((data) => {
+                    console.log(data);
                     const div = document.getElementById('del-status');
-                    div.innerHTML = 'Удалено'
+                    div.innerHTML = 'Удалено';
+                    socket.emit('history', {
+                        message: 'удалена',
+                    });
                 })
             })
 

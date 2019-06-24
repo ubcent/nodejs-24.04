@@ -31,18 +31,17 @@
                 .then((response) => response.json())
                 .then((data) => {
                     
-                    div.innerHTML = data
+                    div.innerHTML = data;
 
                     if (data.token) {
-                        localStorage.setItem('token', token);
+                        localStorage.setItem('token', data.token);
                         window.location = '/tasks.html';
-                        div.innerHTML = "вы авторизованы"
                     } else {
-                        div.innerHTML = "ошибка"
+                        div.innerHTML = "Error"
                     }
                 })
                 .catch(() => {
-                    div.innerHTML = "ошибка"
+                    div.innerHTML = "Error"
                 });
             event.preventDefault();
         })

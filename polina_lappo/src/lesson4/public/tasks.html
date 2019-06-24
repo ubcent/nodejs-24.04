@@ -6,6 +6,8 @@
 </head>
 
 <body>
+        <h2>Список задач</h2>
+        <ul id="list"></ul>
         <h2>Добавить задачу</h2>
         <div>
             <label>Новая задача  <input type='text' name='newTask' id='new-task' required ></label><br>
@@ -26,20 +28,25 @@
         </div>
         <div id='del-status'></div>
         <script>
+
+            window.onload = (() => {
+                getListOfTask();
+            })
         
             const addbtn = document.getElementById('btn-add');
             addbtn.addEventListener('click', () => {
                 const data = {
                     newTask: document.getElementById('new-task').value,
                 };
-                fetch('/tasks', {  
-                    method: 'post',  
+                fetch('/api/tasks', {
+                    method: 'post',
                     headers: {
-                        "Content-type": "application/json"  
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },  
                     body: JSON.stringify(data)
                 })
-                .then((response) => response.text())
+                .then((response) => response.json())
                 .then((data) => {
                     const div = document.getElementById('add-status');
                     div.innerHTML = 'Добавлено'
@@ -52,14 +59,15 @@
                     id: document.getElementById('id').value,
                     updateTask: document.getElementById('update-task').value,
                 };
-                fetch('/tasks', {  
+                fetch('/api/tasks', {  
                     method: 'put',  
                     headers: {
-                        "Content-type": "application/json"  
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,  
                     },  
                     body: JSON.stringify(data)
                 })
-                .then((response) => response.text())
+                .then((response) => response.json())
                 .then((data) => {
                     const div = document.getElementById('upd-status');
                     div.innerHTML = 'Обновлено'
@@ -71,19 +79,39 @@
                 const data = {
                     id: document.getElementById('id-del').value,
                 };
-                fetch('/tasks', {  
+                fetch('/api/tasks', {  
                     method: 'delete',  
                     headers: {
-                        "Content-type": "application/json"  
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },  
                     body: JSON.stringify(data)
                 })
-                .then((response) => response.text())
+                .then((response) => response.json())
                 .then((data) => {
                     const div = document.getElementById('del-status');
                     div.innerHTML = 'Удалено'
                 })
             })
+
+            function getListOfTask() {
+                fetch('/api/tasks', {
+                    method: 'get',
+                    headers: {
+                        "Content-type": "application/json",
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    const div = document.getElementById('list');
+                    for (let i = 0; i < data.length; i++){
+                        const li = document.createElement('li');
+                        li.textContent = `id: ${data[i]._id} task: ${data[i].newTask}`;
+                        div.appendChild(li);
+                    }
+                })
+            }
         </script>
 </body>
 

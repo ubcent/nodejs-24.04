@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="icon" type="image/png" href="/style/favicon.png">
+    <script src="http://localhost:8889/socket.io/socket.io.js"></script>
+    <script src="/script/employeesList.js" async></script>
+    <script src="/script/logOut.js" async></script>
+    <script src="/script/notifications.js" async></script>
+
+</head>
+<body>
+<div class="root">
+    <div class="container">
+        <div class="Employees">
+            <h3 class="hiThere">Hi Boss, here is our employees management dashboard.</h3>
+            <a href="/employee" class="bold">Add an employee</a>
+            <div class="employees">
+                <p>Employees list</p>
+            </div>
+        </div>
+        <div class="notifications">
+            <h3 class="hiThere">Notifications.</h3>
+            <a href="#" class="bold">Add one</a>
+            <ul class="messages">
+
+            </ul>
+            <label class="">Your name: <input type="text" class="author"></label>
+            <label class="">Your message: <input type="text" class="message"></label>
+            <button class="sendMsg">Send</button>
+        </div>
+        <form action="/employees" method="post" name="logout" class="logout">
+            <input type="text" class="hide" name="logout" value="logout">
+            <button class="logoutBtn">Logout&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></button>
+        </form>
+    </div>
+</div>
+</body>

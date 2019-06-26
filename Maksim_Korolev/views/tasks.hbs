@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lesson 6</title>
+</head>
+
+<style>
+    .link {
+        display: block;
+    }
+</style>
+
+<body>
+    <h1>{{title}}</h1>
+<ul>
+    {{#each tasks}}
+        <li>
+            <div>
+                <p>Task: {{this.title}}</p>
+                <p>Data: {{this.date}}</p>
+                <p>Description: {{this.description}}</p>
+                <p>ID:{{this._id}}</p>
+            </div>
+            {{#if complete}}
+                <span>Done</span>
+            {{else}}
+                <span>Not finish!</span>
+            {{/if}}
+        </li>
+    {{/each}}
+</ul>
+</body>
+
+</html>

@@ -19,7 +19,7 @@ rl.question('Введите текст на английском для пере
             json: true,
         },
         (err, res, data) => {
-        if (!err && res.statusCode === 200) {
+        if (!err && res.statusCode === 200) {0
             console.log(`Перевод текста "${answer.cyan}": ${data.text[0].green}`);
         } else {
             console.log('Error: ' + err);

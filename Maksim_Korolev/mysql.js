@@ -19,3 +19,4 @@ app.get('/',async (req, res) => {
     const all = await taskModel.getAll();
     res.render('indexTasks', {all});
 });
+console.log('add');

@@ -10,8 +10,9 @@ const chromeLauncher = require('chrome-launcher');
 const url = require('url');
 const mongo = require('./mongoConnect');
 const mongoDB = new mongo();
-const Employee = require('./mongoModelEmployees');
-const User = require('./mongoModelUsers');
+const Employee = require('./model/EmployeesModel');
+const User = require('./model/UsersModel');
+const Note = require('./model/NoteModel');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -22,14 +23,14 @@ class EmployeesList {
         this.init();
         this.start();
         this.secret = 'secret';
-        this.openLinks = [
+        this.openLinks = [// links allowed to eny request
             'http://localhost:8889/login',
             'http://localhost:8889/employees',
             'http://localhost:8889/employee',
             'http://localhost:8889/404',
         ]
     }
-    init(){
+    init(){// start module, defines all the all the usages
         app.use(express.json());
         app.use(express.urlencoded({extended: true}));
         app.engine('hbs', consolidate.handlebars);
@@ -40,7 +41,7 @@ class EmployeesList {
         app.use(cors());
         app.use(passport.initialize());
     }
-    passport(){
+    passport(){//authentication module
         passport.use(new LocalStrategy(async (username, password, done)=>{
             const user = await User.findOne({username});
             if(!user){
@@ -53,7 +54,7 @@ class EmployeesList {
             }
         }));
     }
-    login(){
+    login(){//login module
         const loginHandler =(req, res, next)=>{
             passport.authenticate('local',{
                     successRedirect: '/employees',
@@ -69,11 +70,10 @@ class EmployeesList {
                         res.json({token: `Bearer ${token}`});
                     }
             })(req, res, next);
-
         };
         app.post('/login', loginHandler);
     }
-    checkAuthentication(){
+    checkAuthentication(){//routes protector, checks if request is authorized
         const mustBeAuthenticated = (req, res, next)=>{//check for grant access
             if (!this.openLinks.includes(req.headers.referer)){
                 if(req.headers.authentication){
@@ -94,16 +94,21 @@ class EmployeesList {
                 }
             } else
                 next();
-
         };
         app.all(mustBeAuthenticated);//scanning all urls to grant access
     }
-    routeHandler(){
+    requestHandler(){//request handler
+        // login start
         app.get('/login', async (req, res)=>{//render login
             res.sendFile('loginForm.html', {root: path.resolve(__dirname, './public')});
         });
+        app.post('/logout*', (req, res)=>{
+            req.logout();
+            res.redirect('/login');
+        });
+        // login end
 
-
+        // employees start
         app.get('/employees', async (req,res)=>{//send main page
             res.sendFile('employeesList.html', {root: path.resolve(__dirname, './public')});
         });
@@ -118,48 +123,62 @@ class EmployeesList {
             const data = await Employee.findById(req.params.id);
             res.json(data);
         });
-        app.get('*', (req, res)=>{
-            res.sendFile('404.html', {root: path.resolve(__dirname, './public')});
-        });
-    }
-    requestHandler(){
-        app.post('/logout', (req, res)=>{
-            req.logout();
-            res.redirect('/login');
-        });
-        app.post('/employees', async (req,res)=>{//open an employee
+
+        app.post('/employees*', async (req,res)=>{//open an employee
             let data = new Employee(req.body);
             data = await data.save();
             res.json(data);
         });
-
-        app.delete('/employees', async (req, res)=>{//remove specific item
+        app.delete('/employees*', async (req, res)=>{//remove specific item
             const employee = await Employee.findByIdAndRemove(req.body.id);
             res.json(employee);
         });
-
-        app.put('/employees', async (req, res)=>{
+        app.put('/employees*', async (req, res)=>{
             const employee = await Employee.findByIdAndUpdate(
                 req.body._id, req.body
-                );
+            );
             res.json(employee);
         });
-        app.patch('/employees', async (req, res)    =>{
+        app.patch('/employees*', async (req, res)    =>{
             const employee = await Employee.findByIdAndUpdate(
                 req.body.id, {$set: req.body.param}
-                );
+            );
             res.json(employee);
         });
+        // employees end
+
+        // notes start
+        app.get('/notifications*', async (req,res)=>{//send main page data
+            const data = await Note.find();
+            res.json({data});
+        });
+        app.post('/notifications*', async (req,res)=>{//open an employee
+            console.log(req.body);
+            console.log(req.headers);
+            // let data = new Note(req.body);
+            // data = await data.save();
+            // res.json(data);
+        });
+        app.delete('/notifications*', async (req, res)=>{//remove specific item
+            const data = await Note.findByIdAndRemove(req.body.id);
+            res.json(data);
+        });
+        // notes end
+
+        // 404
+        app.get('*', (req, res)=>{
+            res.sendFile('404.html', {root: path.resolve(__dirname, './public')});
+        });
+        // 404
     }
     socket(){
         io.on('connection', (socket)=>{
             console.log('Socket connection is on');
-
-            socket.on('message', (message)=>{
-
-                message.timestamp = new Date().toLocaleDateString();
-                socket.broadcast.emit('message', message);
-                socket.emit('message', message);
+            socket.on('note', (note)=>{
+                note.timestamp = new Date().toLocaleDateString();
+                note.socketId = socket.id;
+                socket.broadcast.emit('note', note);
+                socket.emit('note', note);
             });
             socket.on('disconnect', ()=>{
                 console.log('Socket connection is off');
@@ -180,12 +199,16 @@ class EmployeesList {
         }).then(chrome => {
             console.log(`Chrome debugging port running on 8889`);
         });
+        chromeLauncher.launch({
+            startingUrl: 'http://localhost:8889/login'
+        }).then(chrome => {
+            console.log(`Chrome debugging port running on 8889`);
+        });
     }
     start(){
         this.passport();
         this.login();
         this.checkAuthentication();
-        this.routeHandler();
         this.requestHandler();
         this.socket();
         this.listen();

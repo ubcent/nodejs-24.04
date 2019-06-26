@@ -6,12 +6,12 @@
             radial-gradient(ellipse at bottom right, rgba(255, 0, 18, 0.16), transparent);
     background-repeat: no-repeat;
     width: 100vw;
-    height: 100vh;
+    /*height: 100vh;*/
 }
 .container{
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 0 auto;
     padding: 20px;
     position: relative;
@@ -90,6 +90,12 @@ ul > li {
     flex-flow: row;
     flex-wrap: wrap;
     justify-content: flex-end;
+    border: 1px dashed grey;
+    padding: 0 10px;
+    margin: 5px auto;
+}
+.employees-list-item:hover{
+    border: 1px solid black;
 }
 .employees-list-item form.rem{
     display: flex;
@@ -116,16 +122,15 @@ ul > li {
     display: none;
 }
 .upd{
-    min-width: 250px;
-    width: 500px;
+
+    width: 40vw;
+    max-width: 50vw;
     margin-right: 40px;
 }
 .rem{
     width: 80px;
 }
-.hide{
-    display: none;
-}
+
 .authForm {
     display: flex;
     flex-flow: column;
@@ -178,7 +183,7 @@ ul > li {
     flex-flow: column;
     align-items: center;
 }
-.messages{
+.notesContainer{
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -188,6 +193,63 @@ ul > li {
     border-radius: 10px;
 
 /*    remove after*/
+    width: 400px;
+}
+.noteItem{
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 95%;
+    margin: 5px auto;
+    border: 1px dashed grey;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+.noteItem:hover{
+    border: 1px solid black;
+}
+.noteItem p{
+    margin: 0;
+}
+.noteItem button{
+    margin: 0;
+    width: 30px;
+    min-height: 30px;
+}
+.addNoteForm, .addNoteFormInput{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+.addNoteForm{
+    position: relative;
+}
+.addNoteFormInput{
+    position: absolute;
+    top:40px;
     width: 300px;
     height: 200px;
+    padding: 20px;
+    border-radius:5%;
+    background: rgba(255,255,255,0.9);
+}
+.addNoteFormInput input{
+    border: 1px solid lightgrey;
+}
+.btnContainer{
+    display: flex;
+    flex-flow: row;
+}
+.btnContainer i{
+    font-weight: 700;
+    font-size: 0.8em;
+}
+
+
+
+
+
+.hide{
+    display: none;
 }

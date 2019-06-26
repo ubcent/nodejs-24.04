@@ -1,27 +1,36 @@
+
 class employeesList{
     constructor() {
-        this.getData();
+        this.init().catch(err => console.log(err));
     }
-    init(){
+    async init(){
+        const data = await this.getData();
+        this.showAddNoteForm();
+        this.setEventListeners();
+    }
+    setEventListeners(){
         const $remove = document.querySelectorAll(`.remove-btn`);
         const $employee = document.querySelectorAll(`.employee`);
-        this.setEventListeners({$remove,$employee});
-    }
-    setEventListeners({$remove,$employee}){
-        [...$remove].map(item=>{
+
+        [...$remove].map(item=>{// set remove btn listen
             item.addEventListener('click', (e)=>{
                 e.preventDefault();
                 this.sendData('/employees','DELETE',{id: e.currentTarget.dataset.id})
                     .then(response =>response.json())
                     .then(res =>{
+                        console.log(res);
                         if (res._id){
                             window.location.href = "/employees";
+                            socket.emit('note', {
+                                author: 'System notification. Removed an employee: ',
+                                note: `${res.lastName} ${res.firstName}`,
+                            })
                         }
                     })
                     .catch(err => console.log(err))
             });
         });
-        [...$employee].map(item=>{
+        [...$employee].map(item=>{// set select employee btn listen
             item.addEventListener('click', (e)=> {
                 e.preventDefault();
                 localStorage.setItem('employeeId', e.currentTarget.dataset.id);
@@ -32,12 +41,18 @@ class employeesList{
         });
     }
     getData(){
-        this.sendData('/employees/data', 'GET', )
-            .then(response =>response.json())
-            .then(data=>{
-                this.render(data)
-            })
-            .catch(err => console.log(err))
+        return new Promise((resolve, reject)=>{
+            this.sendData('/employees/data', 'GET', )
+                .then(response =>response.json())
+                .then(data=>{
+                    this.render(data);
+                    resolve();
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject();
+                })
+        });
     }
     render(data){
         let body = data.data.reduce((acc, item)=>{
@@ -60,7 +75,6 @@ class employeesList{
         root.classList.add('employees_list_container');
         root.innerHTML = body;
         document.querySelector('.employees').append(root);
-        this.init();
     }
     sendData(route, method, data){
         let token = undefined;
@@ -81,6 +95,19 @@ class employeesList{
                 body: JSON.stringify(data), // body data type must match "Content-Type" header
             }))
     }
+    showAddNoteForm(){
+        let addNoteBtn = document.querySelector('.addNoteForm > a');
+        addNoteBtn.addEventListener('click', (e)=>{
+            let block = e.currentTarget.parentNode.children[1];
+                if(block.classList.contains('hide')){
+                    block.classList.remove('hide');
+                } else {
+                    block.classList.add('hide');
+                }
+
+        })
+    }
+
 
 }
 let newEmployeesList = new employeesList();

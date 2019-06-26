@@ -27,13 +27,19 @@
         </div>
         <div class="notifications">
             <h3 class="hiThere">Notifications.</h3>
-            <a href="#" class="bold">Add one</a>
-            <ul class="messages">
+            <div class="addNoteForm">
+                <a href="#" class="bold">Add one</a>
+                <div class="addNoteFormInput hide">
+                    <label class="">Your name: <input type="text" class="author" required></label>
+                    <label class="">Your note: <input type="text" class="note" required></label>
+                    <button class="sendMsg">Send</button>
+                </div>
+            </div>
+            <div class="notesContainer">
+<!--                <ul class="notes">-->
+<!--                </ul>-->
+            </div>
 
-            </ul>
-            <label class="">Your name: <input type="text" class="author"></label>
-            <label class="">Your message: <input type="text" class="message"></label>
-            <button class="sendMsg">Send</button>
         </div>
         <form action="/employees" method="post" name="logout" class="logout">
             <input type="text" class="hide" name="logout" value="logout">

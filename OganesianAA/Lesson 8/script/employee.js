@@ -1,3 +1,5 @@
+let socket = io.connect(`http://localhost:8889`);
+
 class Employee{
     constructor(){
         this.getData();
@@ -23,21 +25,31 @@ class Employee{
     setEventListeners({$saveBtn,$_id, $firstName, $lastName,$birthDate, $hireDate, $gender}){
         $saveBtn.addEventListener('click', (e)=>{
            e.preventDefault();
-           if ($_id.value){
+           if ($_id.value){// update exist employee
                this.sendData('/employees', 'PUT', {_id:$_id.value, firstName:$firstName.value, lastName:$lastName.value, birthDate:$birthDate.value, hireDate:$hireDate.value, gender:$gender.value})
                    .then(response =>response.json())
                    .then(res =>{
+                       console.log(res);
                        if (res._id){
                            window.location.href = "/employees";
+                           socket.emit('note', {
+                               author: 'System notification. Updated an employee: ',
+                               note: `${res.lastName} ${res.firstName}`,
+                           })
                        }
                    })
                    .catch(err => console.log(err))
-           } else{
+           } else{// save new employee
                 this.sendData('/employees', 'POST', {firstName:$firstName.value, lastName:$lastName.value, birthDate:$birthDate.value, hireDate:$hireDate.value, gender:$gender.value})
                     .then(response =>response.json())
                     .then(res =>{
+                        console.log(res);
                         if (res._id){
                             window.location.href = "/employees";
+                            socket.emit('note', {
+                                author: 'System notification. Added an employee: ',
+                                note: `${res.lastName} ${res.firstName}`,
+                            })
                         }
                     })
                     .catch(err => console.log(err))

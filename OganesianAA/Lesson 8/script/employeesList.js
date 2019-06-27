@@ -18,13 +18,20 @@ class employeesList{
                 this.sendData('/employees','DELETE',{id: e.currentTarget.dataset.id})
                     .then(response =>response.json())
                     .then(res =>{
-                        console.log(res);
                         if (res._id){
                             window.location.href = "/employees";
                             socket.emit('note', {
                                 author: 'System notification. Removed an employee: ',
                                 note: `${res.lastName} ${res.firstName}`,
+                            });
+                            this.sendData('/notifications', 'POST', {
+                                    noteText: `${res.lastName} ${res.firstName}`,
+                                    author: 'System notification. Removed an employee: ',
+                                    createTime: new Date(),
                             })
+                                .then(response =>response.json())
+                                .then(res =>{console.log(res);})
+                                .catch(err => console.log(err))
                         }
                     })
                     .catch(err => console.log(err))

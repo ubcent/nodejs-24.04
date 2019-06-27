@@ -1,3 +1,4 @@
+//declare all the modules
 const path = require('path');
 const express = require('express');
 const app = express();
@@ -20,8 +21,15 @@ const LocalStrategy = require('passport-local').Strategy;
 
 class EmployeesList {
     constructor(){
-        this.init();
+        this.init();//starting with initialization
         this.start();
+        this.passport();
+        this.login();
+        this.checkAuthentication();
+        this.requestHandler();
+        this.socket();
+        this.listen();
+        this.chromeLanuncher();
         this.secret = 'secret';
         this.openLinks = [// links allowed to eny request
             'http://localhost:8889/login',
@@ -148,18 +156,16 @@ class EmployeesList {
         // employees end
 
         // notes start
-        app.get('/notifications*', async (req,res)=>{//send main page data
+        app.get('/notifications*', async (req,res)=>{//get all notes
             const data = await Note.find();
             res.json({data});
         });
-        app.post('/notifications*', async (req,res)=>{//open an employee
-            console.log(req.body);
-            console.log(req.headers);
-            // let data = new Note(req.body);
-            // data = await data.save();
-            // res.json(data);
+        app.post('/notifications*', async (req,res)=>{//add new note
+            let data = new Note(req.body);
+            data = await data.save();
+            res.json(data);
         });
-        app.delete('/notifications*', async (req, res)=>{//remove specific item
+        app.delete('/notifications*', async (req, res)=>{//remove specific note
             const data = await Note.findByIdAndRemove(req.body.id);
             res.json(data);
         });
@@ -175,7 +181,7 @@ class EmployeesList {
         io.on('connection', (socket)=>{
             console.log('Socket connection is on');
             socket.on('note', (note)=>{
-                note.timestamp = new Date().toLocaleDateString();
+                note.timestamp = new Date();
                 note.socketId = socket.id;
                 socket.broadcast.emit('note', note);
                 socket.emit('note', note);
@@ -206,13 +212,7 @@ class EmployeesList {
         });
     }
     start(){
-        this.passport();
-        this.login();
-        this.checkAuthentication();
-        this.requestHandler();
-        this.socket();
-        this.listen();
-        this.chromeLanuncher();
+
     }
 }
 

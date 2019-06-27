@@ -13,9 +13,6 @@ class notifications{
     setEventListeners(){
         const $btnClose = document.querySelectorAll('.btnCloseNote');
         const $btnMinimize = document.querySelectorAll('.btnMinimizeNote');
-
-        // console.log($btnClose);
-        // console.log($btnMinimize);
         [...$btnClose].map(item=>{
             item.addEventListener('click',e => {
                 this.removeNote({id: e.currentTarget.dataset.id});
@@ -63,8 +60,13 @@ class notifications{
 
         $send.addEventListener('click', (event)=>{
             socket.emit('note', {
+                author: `System notification. New note from: ${$author.value}` ,
                 note: $note.value,
-                author: $author.value,
+            });
+            this.saveNewNote({//post data to DB
+                author: `System notification. New note from: ${$author.value}` ,
+                noteText:$note.value,
+                createTime: new Date(),
             });
             $note.value='';
             $author.value='';
@@ -87,17 +89,20 @@ class notifications{
     removeNote(id){
         this.sendData('/notifications', 'DELETE', {id: id.id})
             .then(response =>response.json())
-            .then(res =>{
-                console.log(res);
-
-            })
+            .then(res =>{console.log(res);})
+            .catch(err => console.log(err))
+    }
+    saveNewNote({noteText, author, createTime}){
+        this.sendData('/notifications', 'POST', {noteText, author, createTime})
+            .then(response =>response.json())
+            .then(res =>{console.log(res);})
             .catch(err => console.log(err))
     }
     render(data){
         let body = data.data.reduce((acc, item)=>{
             return (
                 acc + `<li class="noteItem">
-                            <p>${item.author} ${item.noteText}</p>
+                            <p><span class="noteStyle">${item.author}</span> ${item.noteText}</p>
                             <div class="btnContainer">
                                 <button data-id="${item._id}" class="btnMinimizeNote">
                                     <i class="fas fa-window-minimize"></i>
@@ -118,7 +123,6 @@ class notifications{
         if (localStorage.getItem('token')){
             token = localStorage.getItem('token');
         }
-        console.log(route, method, data);
         return(
             fetch(route, {
                 method: method,

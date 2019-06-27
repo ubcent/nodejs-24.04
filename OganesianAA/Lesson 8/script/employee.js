@@ -35,7 +35,17 @@ class Employee{
                            socket.emit('note', {
                                author: 'System notification. Updated an employee: ',
                                note: `${res.lastName} ${res.firstName}`,
-                           })
+                           });
+
+                           this.sendData('/notifications', 'POST',
+                               {
+                                   noteText: `${res.lastName} ${res.firstName}`,
+                                   author: 'System notification. Updated an employee: ',
+                                   createTime: new Date(),
+                               })
+                               .then(response =>response.json())
+                               .then(res =>{console.log(res);})
+                               .catch(err => console.log(err))
                        }
                    })
                    .catch(err => console.log(err))
@@ -49,7 +59,17 @@ class Employee{
                             socket.emit('note', {
                                 author: 'System notification. Added an employee: ',
                                 note: `${res.lastName} ${res.firstName}`,
-                            })
+                            });
+
+                            this.sendData('/notifications', 'POST',
+                                {
+                                    noteText: `${res.lastName} ${res.firstName}`,
+                                    author: 'System notification. Updated an employee: ',
+                                    createTime: new Date(),
+                                })
+                                .then(response =>response.json())
+                                .then(res =>{console.log(res);})
+                                .catch(err => console.log(err))
                         }
                     })
                     .catch(err => console.log(err))

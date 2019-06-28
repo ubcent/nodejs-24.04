@@ -205,11 +205,11 @@ class EmployeesList {
         }).then(chrome => {
             console.log(`Chrome debugging port running on 8889`);
         });
-        chromeLauncher.launch({
-            startingUrl: 'http://localhost:8889/login'
-        }).then(chrome => {
-            console.log(`Chrome debugging port running on 8889`);
-        });
+        // chromeLauncher.launch({
+        //     startingUrl: 'http://localhost:8889/login'
+        // }).then(chrome => {
+        //     console.log(`Chrome debugging port running on 8889`);
+        // });
     }
     start(){
 

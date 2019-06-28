@@ -53,7 +53,6 @@ class Employee{
                 this.sendData('/employees', 'POST', {firstName:$firstName.value, lastName:$lastName.value, birthDate:$birthDate.value, hireDate:$hireDate.value, gender:$gender.value})
                     .then(response =>response.json())
                     .then(res =>{
-                        console.log(res);
                         if (res._id){
                             window.location.href = "/employees";
                             socket.emit('note', {
@@ -61,14 +60,11 @@ class Employee{
                                 note: `${res.lastName} ${res.firstName}`,
                             });
 
-                            this.sendData('/notifications', 'POST',
-                                {
+                            this.sendData('/notifications', 'POST',{
                                     noteText: `${res.lastName} ${res.firstName}`,
                                     author: 'System notification. Updated an employee: ',
-                                    createTime: new Date(),
-                                })
+                                    createTime: new Date(),})
                                 .then(response =>response.json())
-                                .then(res =>{console.log(res);})
                                 .catch(err => console.log(err))
                         }
                     })
@@ -76,17 +72,15 @@ class Employee{
            }
         });
     }
-    getData(){
+    async getData(){
         const id = localStorage.getItem('employeeId');
         if(!id){
             let data = {_id:'', firstName:'', lastName:'', birthDate:'', hireDate:'', gender:''};
             this.render(data);
         } else{
-            this.sendData(`/employees/${id}`, 'GET', )
+            let data = await this.sendData(`/employees/${id}`, 'GET', )
                 .then(response =>response.json())
-                .then(data=>{
-                    this.render(data)
-                })
+                .then(data=>{this.render(data)})
                 .catch(err => console.log(err))
         }
     }

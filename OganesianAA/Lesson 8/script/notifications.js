@@ -50,8 +50,6 @@ class notifications{
             const $addNoteInputForm = document.querySelector('.addNoteFormInput');
             $addNoteInputForm.classList.add('hide');
         });
-
-
     }
     noteEmit(){// send a note
         const $send = document.querySelector('.sendMsg');
@@ -72,31 +70,19 @@ class notifications{
             $author.value='';
         });
     }
-    getData(){
-        return new Promise((resolve, reject)=>{
-            this.sendData('/notifications', 'GET',)
-                .then(response => response.json())
-                .then(data=>{
-                    this.render(data);
-                    resolve();
-                })
-                .catch(err => {
-                    console.log(err);
-                    reject();
-                })
-        })
+    async getData(){
+        let data = await this.sendData('/notifications', 'GET',)
+            .then(response => response.json())
+            .then(data=> {this.render(data)})
+            .catch(err => {console.log(err)})
     }
-    removeNote(id){
-        this.sendData('/notifications', 'DELETE', {id: id.id})
-            .then(response =>response.json())
-            .then(res =>{console.log(res);})
-            .catch(err => console.log(err))
+    async removeNote(id){
+        let data = await this.sendData('/notifications', 'DELETE', {id: id.id})
+            .catch(err => console.log(err));
     }
-    saveNewNote({noteText, author, createTime}){
-        this.sendData('/notifications', 'POST', {noteText, author, createTime})
-            .then(response =>response.json())
-            .then(res =>{console.log(res);})
-            .catch(err => console.log(err))
+    async saveNewNote({noteText, author, createTime}){
+        let data = await this.sendData('/notifications', 'POST', {noteText, author, createTime})
+            .catch(err => console.log(err));
     }
     render(data){
         let body = data.data.reduce((acc, item)=>{

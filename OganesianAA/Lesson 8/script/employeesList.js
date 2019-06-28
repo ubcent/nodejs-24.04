@@ -13,28 +13,24 @@ class employeesList{
         const $employee = document.querySelectorAll(`.employee`);
 
         [...$remove].map(item=>{// set remove btn listen
-            item.addEventListener('click', (e)=>{
+            item.addEventListener('click', async (e)=>{
                 e.preventDefault();
-                this.sendData('/employees','DELETE',{id: e.currentTarget.dataset.id})
+                let data = await this.sendData('/employees','DELETE',{id: e.currentTarget.dataset.id})
                     .then(response =>response.json())
-                    .then(res =>{
-                        if (res._id){
-                            window.location.href = "/employees";
-                            socket.emit('note', {
-                                author: 'System notification. Removed an employee: ',
-                                note: `${res.lastName} ${res.firstName}`,
-                            });
-                            this.sendData('/notifications', 'POST', {
-                                    noteText: `${res.lastName} ${res.firstName}`,
-                                    author: 'System notification. Removed an employee: ',
-                                    createTime: new Date(),
-                            })
-                                .then(response =>response.json())
-                                .then(res =>{console.log(res);})
-                                .catch(err => console.log(err))
-                        }
-                    })
-                    .catch(err => console.log(err))
+                    .catch(err => console.log(err));
+                if (data._id){
+                    socket.emit('note', {
+                        author: 'System notification. Removed an employee: ',
+                        note: `${data.lastName} ${data.firstName}`,
+                    });
+                    let note = await this.sendData('/notifications', 'POST', {
+                        noteText: `${data.lastName} ${data.firstName}`,
+                        author: 'System notification. Removed an employee: ',
+                        createTime: new Date(),})
+                        .then(response =>response.json())
+                        .catch(err => console.log(err));
+                    window.location.href = "/employees";
+                }
             });
         });
         [...$employee].map(item=>{// set select employee btn listen
@@ -47,19 +43,11 @@ class employeesList{
             });
         });
     }
-    getData(){
-        return new Promise((resolve, reject)=>{
-            this.sendData('/employees/data', 'GET', )
-                .then(response =>response.json())
-                .then(data=>{
-                    this.render(data);
-                    resolve();
-                })
-                .catch(err => {
-                    console.log(err);
-                    reject();
-                })
-        });
+    async getData(){
+        let data = await this.sendData('/employees/data', 'GET', )
+            .then(response =>response.json())
+            .then(data=>{this.render(data)})
+            .catch(err=>{console.log(err)});
     }
     render(data){
         let body = data.data.reduce((acc, item)=>{

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <script async src="/script/dataModifier.js"></script>
+</head>
+<body>
+    <div class="root">
+        <div class="container">
+            {{#if error}}
+                <h2>Error! </h2>
+            {{/if}}
+            <h3 class="hiThere">Hi there, after you finish with form please hit the Save button</h3>
+            <a href="/main">Go to main</a>
+            <div class="addForm">
+
+                    <form action="/employees/{{data._id}}" method="POST" name="update">
+                        <label class="hide">id
+                            <input class="firstName" type="text" name="update[id]" value="{{data._id}}" required>
+                            <p>{{data._id}}</p>
+                        </label>
+                        <label>First name
+                            <input class="firstName" type="text" name="update[firstName]" value="{{data.firstName}}" required>
+                        </label>
+                        <label>Last name
+                            <input class="lastName" type="text" name="update[lastName]" value="{{data.lastName}}" required>
+                        </label>
+                        <label>Birth-date
+                            <input class="birthDate" type="date" data-date-format="DD/MM/YYYY" name="update[birthDate]" data-date="{{data.birthDate}}"  required>
+                        </label>
+                        <label>Hire-date
+                            <input class="hireDate" type="date" data-date-format="DD/MM/YYYY" name="update[hireDate]" data-date="{{data.hireDate}}" required>
+                        </label>
+                        <label>Gender
+                            <input class="gender" list="mylist" name="update[gender]" value="{{data.gender}}" required>
+                        </label>
+                        <datalist id="mylist">
+                            <option value="M" label="Male"></option>
+                            <option value="F" label="Female"></option>
+                        </datalist>
+                        <button class="addBtn">Save</button>
+                    </form>
+
+            </div>
+            <form action="/employees" method="post" name="logout" class="logout">
+                <input type="text" class="hide" name="logout" value="logout">
+                <button>Logout&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></button>
+            </form>
+        </div>
+    </div>
+</body>

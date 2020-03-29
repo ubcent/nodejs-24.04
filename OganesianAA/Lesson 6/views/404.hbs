@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script" rel="stylesheet">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <script async src="/script/dataModifier.js"></script>
+</head>
+<body>
+    <div class="root">
+        <div class="container">
+            {{#if error}}
+                <h2>Error! </h2>
+            {{/if}}
+            <h1 class="404">404 page not found</h1>
+            <a href="/main">Go to main</a>
+            <form action="/" method="post" name="logout" class="logout">
+                <input type="text" class="hide" name="logout" value="logout">
+                <button>Logout&nbsp;&nbsp;<i class="fas fa-sign-out-alt"></i></button>
+            </form>
+        </div>
+    </div>
+</body>
